@@ -1,0 +1,22 @@
+String should contain the following functionalities
+
+-- A string can be initialized with a string literal or a char array
+-- A string can be initialized as a null string
+
+-- A string can be initialized from an existing string
+-- A string can be assigned the value of an existing string
+-- Two strings can be compared
+
+-- A string can be read as a line from input stream
+-- A string can be read as a line directly from input stream with >>
+-- A string can be read as a word from input stream
+-- A string can be read as the string before a separator from input stream
+-- A string can be written to an output stream
+-- A string can be written to an output stream directly with <<
+
+-- We can check if a string is numerical
+-- A string can be parsed to an int
+-- A string can be parsed from an int
+
+-- We can extract a substring from a string
+-- We can count the occurences of a given char in the string
