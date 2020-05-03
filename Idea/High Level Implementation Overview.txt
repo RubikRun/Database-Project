@@ -1,0 +1,142 @@
+class Database
+{
+    Vector<Table> tables;
+
+    String filename;
+
+    bool LoadFromFile(String filename)
+    {
+        //Load tables from file and save the filename to this->filename
+    }
+
+    bool SaveToFile(String filename = "")
+    {
+        //Saves all tables (names and filenames) to the file
+        //If file not specified, saves them to this->filename
+        //Also saves each table to its file
+    }
+
+    bool Import(String tableFilename)
+    {
+        //If there is no table with the given name, loads the table from the file
+        //and adds it to database's tables
+        //SaveToFile
+    }
+
+    void ShowTables()
+    {
+        //Prints names of all tables
+    }
+
+    bool Describe(String tableName)
+    {
+        //Prints column types of the table with the given name
+    }
+
+    bool Print(String tableName)
+    {
+        //Show all the rows of the table with the given name
+        //Use the StringViewer for showing the rows
+    }
+
+    bool Export(String tableName, String filename)
+    {
+        //Saves the table to the file
+    }
+
+    bool Select(unsigned columnId, String value, String tableName)
+    {
+        //Show all rows of the table that have the given value in the given column
+        //Use the StringViewer for showing rows
+    }
+
+    bool AddColumn(String tableName, String columnName, ColumnType columnType)
+    {
+        //Adds a new column with the given name and type to the given table
+        //Id should be largest and all the rows have NULL value in this new column
+    }
+
+    bool Update(String tableName, unsigned searchIndex, String searchValue,
+    unsigned targetIndex, String targetValue)
+    {
+        //In the given table finds all rows with search value in the column with search column index,
+        //and changes the value in their column with target column index to be the target value
+        //target value can be NULL
+    }
+
+    bool Delete(String tableName, unsigned searchIndex, String searchValue)
+    {
+        //Deletes all rows from the given table that have the search value in the search column
+    }
+
+    bool Insert(String tableName, Vector<String> rowValues)
+    {
+        //Inserts to the table a new row with the given values
+    }
+
+    bool InnerJoin(String tableName1, unsigned index1, String tableName2, unsigned index2)
+    {
+        //Creates a new table that is the inner join of the two given tables
+        //Prints its name
+    }
+
+    bool Rename(String oldTableName, String newTableName)
+    {
+        //Changes the name of the given table
+    }
+
+    bool Count(String tableName, unsigned searchIndex, String searchValue)
+    {
+        //Counts the rows in the table that have the search value in the search column
+        //Prints it
+    }
+
+    bool Aggregate(String tableName, unsigned searchIndex, String searchValue,
+    unsigned targetIndex, Operation operation)
+    {
+        //Finds the rows from the table that in the search column have the search value
+        //Does the operation to target column of the found rows
+        //Prints the result
+        //(Target column should be of numberical type)
+    }
+}
+
+class Table
+{
+    Vector<String> columnNames;
+    Vecto<ColumnType> columnTypes;
+    Matrix<String> values;
+    
+    String name;
+    String filename;
+
+    Table(String filename)
+    {
+        this->LoadFromFile(filename);
+    }
+
+    bool LoadFromFile(String filename)
+    {
+        //Read all values from the file and set object's data to them
+        //Update this->filename = filename
+    }
+
+    bool SaveToFile(String filename = "")
+    {
+        //if filename not specified, write to this->filename
+        //Write to the file all data of the object
+    }
+
+    bool Show(unsigned searchIndex = INDEX_INVALID, String searchValue = STRING_EMPTY)
+    {
+        //Finds the rows with the search value in the search column, if specified
+        //Shows the rows with the StringViewer
+    }
+
+    bool AddColumn(String columnName, String columnType)
+    {
+        //Adds a new column to the matrix. Each row has value NULL in the new column
+        //The Id of the new column is just the next index (starting from 1)
+        //Adds column name and column type to their respective vectors
+    }
+}

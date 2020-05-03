@@ -1,0 +1,19 @@
+enum ColumnType = {WholeNumber, RationalNumber, String};
+
+class String
+{
+    //can be NULL
+}
+
+class StringViewer
+{
+    //Can be used to divide a long string into pages of a given size
+    //and show them to the user one by one.
+    //User can type commands "nextpage", "prevpage", "gotopage n", "exit"
+    //to navigate between pages
+}
+
+class StringSplitter
+{
+    //Used to split a string and extract words from it
+}
