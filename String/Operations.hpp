@@ -10,7 +10,7 @@ String String::operator+(const char* charArray)
         String string(charArray);
         return string;
     }
-    //If the char array is null, return this string
+    //If the char array is null, return the string
     if (charArray == nullptr)
     {
         return *this;
@@ -19,13 +19,13 @@ String String::operator+(const char* charArray)
     //Create a char array for the concatenation
     unsigned arrLength = strlen(charArray);
     char* concat = new char[this->length + arrLength + 1];
-    //Add the characters of the string
-    for (int i = 0; i < this->length; i++)
+    //Add the characters of the string to the concatenation
+    for (int i = 0; i < this->length; ++i)
     {
         concat[i] = this->charArray[i];
     }
     //followed by the characters of the char array
-    for (int i = 0; i < arrLength; i++)
+    for (int i = 0; i < arrLength; ++i)
     {
         concat[this->length + i] = charArray[i];
     }
@@ -42,7 +42,7 @@ String operator+(const char* charArray, String string)
 {
     //Create a string from the char array
     String arrString(charArray);
-    //Return the concatenation of the string from the char array and the given string
+    //Return the concatenation
     return arrString + string;
 }
 
@@ -57,7 +57,7 @@ String String::operator+=(const char* charArray)
     //Find the concatenation and assign it to the string
     String concat = *this + charArray;
     *this = concat;
-
+    //Return this string, so that we can use it in expressions
     return *this;
 }
 
@@ -66,7 +66,7 @@ String String::operator+=(const String& another)
     //Find the concatenation and assign it to the string
     String concat = *this + another;
     *this = concat;
-
+    //Return this string, so that we can use it in expressions
     return *this;
 }
 
@@ -76,10 +76,10 @@ String String::GetSubstring(unsigned begin, unsigned length)
     //then return an empty string
     if (begin >= this->length)
     {
-        const char* emp = "";
-        String string(emp);
+        const char* empty = "";
+        String string(empty);
 
-        return emp;
+        return string;
     }
     //If the substring ends after the full string ends,
     //then reduce the length of the substring so that it ends where the full string ends
@@ -94,7 +94,7 @@ String String::GetSubstring(unsigned begin, unsigned length)
         charArray[i] = this->charArray[begin + i];
     }
     charArray[length] = '\0';
-    //Create a string from the char array
+    //Create a string from the char array and free the memory
     String string(charArray);
     delete[] charArray;
     
@@ -103,11 +103,11 @@ String String::GetSubstring(unsigned begin, unsigned length)
 
 unsigned String::Count(char c)
 {
-    //Traverse all the chars in the string with a char pointer
-    //Count the ones that are equal to the given char
     unsigned counter = 0;
+    //Traverse all the chars in the string with a char pointer
     for (char* p = this->charArray; *p != '\0'; p++)
     {
+        //Count the ones that are euqual to the given char
         if (*p == c)
         {
             counter++;
@@ -118,14 +118,15 @@ unsigned String::Count(char c)
 
 int String::Find(char c)
 {
-    //Traverse all the chars in the string
-    //If we reach a char equal to the given char, return its index
+    //Traverse all the chars in the string with an index
     for (int i = 0; i < this->length; i++)
     {
+        //The first time we reach a char eual to the given one, we return its index
         if (this->charArray[i] == c)
         {
             return i;
         }
     }
+    //If we never reach an equal char, we return -1 (an invalid index)
     return -1;
 }

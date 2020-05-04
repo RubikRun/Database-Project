@@ -40,8 +40,8 @@ void String::ReadLine(std::istream& stream)
 
 void String::ReadWord(std::istream& stream)
 {
-    //Read from stream until we reach a space ot a new line
-    this->ReadNext(stream, ' ');
+    //Read from stream until we reach a space or a new line
+    this->ReadNext(stream, ' ', true);
 }
 
 std::istream& operator>>(std::istream& stream, String& string)

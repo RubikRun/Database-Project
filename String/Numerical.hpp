@@ -108,7 +108,7 @@ String ParseFromInt(int n)
 
 double String::ParseToDouble()
 {
-    //If the string is not numberical, we cannot parse it
+    //If the string is not numerical, we cannot parse it
     if (!this->IsNumerical())
     {
         return 0;
@@ -147,7 +147,8 @@ double String::ParseToDouble()
 
 String ParseFromDouble(double d)
 {
-    //Check for negative and find the sign
+    //If the number is negative,
+    //we'll parse it as positive and then flip the sign
     String sign = "";
     bool negative = (d < 0);
     if (negative)

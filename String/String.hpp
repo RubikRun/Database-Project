@@ -27,7 +27,7 @@ class String
         //Assigns the value of another string
         String& operator=(const String& another);
 
-        //Compares this string to a char array
+        //Compares the string to a char array
         bool operator==(const char* charArray);
 
         //Compares this string to the other string
@@ -48,25 +48,25 @@ class String
         //Appends the other string to the end of this string
         String operator+=(const String& another);
 
-        //Reads from the stream until it reaches the separator or a new line
+        //Reads from the stream to the string until it reaches the separator or a new line
         void ReadNext(std::istream& stream = std::cin, char separator = ' ', bool endOnNewLine = true);
 
-        //Reads a line from the stream
+        //Reads a line from the stream to the string
         void ReadLine(std::istream& stream = std::cin);
 
-        //Reads a word from the stream
+        //Reads a word from the stream to the string
         void ReadWord(std::istream& stream = std::cin);
 
-        //Reads a line from a stream to the string, using the ">>" operator
+        //Reads a line from the stream to the string, using the ">>" operator
         friend std::istream& operator>>(std::istream& stream, String& string);
 
-        //Writes the string to a stream
+        //Writes the string to the stream
         void Write(std::ostream& stream = std::cout);
 
-        //Writes the string to a stream, using the "<<" operator
+        //Writes the string to the stream, using the "<<" operator
         friend std::ostream& operator<<(std::ostream& stream, String string);
 
-        //Checks if the string is numberical, can be parsed to a numerical type
+        //Checks if the string is numerical, can be parsed to a numerical type
         bool IsNumerical();
 
         //Parses the string to an int
@@ -87,7 +87,7 @@ class String
         //Counts the occurrences of a char in the string
         unsigned Count(char c);
 
-        //Finds the first occurrence of a char and returns its index
+        //Finds the first occurrence of a char in the string and returns its index
         int Find(char c);
 
         //Checks if the string is null
@@ -186,5 +186,8 @@ String::~String()
     if (!this->IsNull())
     {
         delete[] this->charArray;
+        //and make it null
+        this->charArray = nullptr;
+        this->length = 0;
     }
 }
