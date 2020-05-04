@@ -1,0 +1,6 @@
+#include "StringBasic.hpp"
+#include "StringNumerical.hpp"
+#include "StringOperations.hpp"
+#include "StringReading.hpp"
+#include "String.hpp"
+#include "StringWriting.hpp"
