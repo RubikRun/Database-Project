@@ -76,10 +76,7 @@ String String::GetSubstring(unsigned begin, unsigned length)
     //then return an empty string
     if (begin >= this->length)
     {
-        const char* empty = "";
-        String string(empty);
-
-        return string;
+        return "";
     }
     //If the substring ends after the full string ends,
     //then reduce the length of the substring so that it ends where the full string ends

@@ -93,6 +93,9 @@ class String
         //Checks if the string is null
         bool IsNull();
 
+        //Returns the string's length
+        unsigned GetLength();
+
         //Frees the memory
         ~String();
 };
@@ -178,6 +181,11 @@ bool String::IsNull()
 {
     //Check if the char array is a null pointer
     return (this->charArray == nullptr);
+}
+
+unsigned String::GetLength()
+{
+    return this->length;
 }
 
 String::~String()
