@@ -1,7 +1,5 @@
 #pragma once
 
-#define Debug(message) std::cout << "Debug console: " << message << std::endl;
-
 const double epsilon = 0.001;
 
 //Returns the smaller of two objects
@@ -26,6 +24,7 @@ T max(T a, T b)
     return b;
 }
 
+//Returns the absolute value of a numberical object
 template <typename T>
 T absVal(T x)
 {
@@ -36,21 +35,25 @@ T absVal(T x)
     return x;
 }
 
+//Checks if a char is a digit
 bool IsDigit(char c)
 {
     return (c >= '0' && c <= '9');
 }
 
+//Parses a char to a digit
 int ParseToDigit(char c)
 {
     return c - '0';
 }
 
+//Parses a digit to a char
 char ParseFromDigit(int d)
 {
     return d + '0';
 }
 
+//Counts the number of digits of a given number
 int CountDigits(int n)
 {
     int digits = 0;
@@ -64,6 +67,7 @@ int CountDigits(int n)
     return digits;
 }
 
+//Checks if two numbers are close enough to each other
 bool CloseEnough(double a, double b)
 {
     return ( absVal(a - b) <= epsilon );
