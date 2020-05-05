@@ -67,6 +67,10 @@ class String
         //Writes the string to the stream, using the "<<" operator
         friend std::ostream& operator<<(std::ostream& stream, String string);
 
+        //Shows the string in view mode, page by page
+        //User can type commands "nextpage", "prevpage", "goto <page number>", "help", "exit"
+        void ViewMode(unsigned linesPerPage = 10);
+
         //Checks if the string is numerical, can be parsed to a numerical type
         bool IsNumerical();
 
@@ -87,6 +91,12 @@ class String
 
         //Splits the string by a separator and returns a vector of the resulting parts
         Vector<String> Split(char separator = ' ');
+
+        //Checks if the string starts with a given prefix
+        bool StartsWith(String prefix);
+
+        //Checks if the string ends with a given suffix
+        bool EndsWith(String suffix);
 
         //Counts the occurrences of a char in the string
         unsigned Count(char c);

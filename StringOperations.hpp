@@ -130,6 +130,36 @@ Vector<String> String::Split(char separator)
     return splitted;
 }
 
+bool String::StartsWith(String prefix)
+{
+    //If the string or the prefix is null, or the prefix is longer than the string,
+    //then this cannot be a prefix
+    if (this->IsNull() || prefix.IsNull() || prefix.length > this->length)
+    {
+        return false;
+    }
+
+    //Get the real prefix of the string - its prefix with the same length as the given prefix
+    String realPrefix = this->GetSubstring(0, prefix.length);
+    //Check if the real prefix is the same as the given prefix
+    return (prefix == realPrefix);
+}
+
+bool String::EndsWith(String suffix)
+{
+    //If the string or the suffix is null, or the suffix is longer than the string,
+    //then this cannot be a suffix
+    if (this->IsNull() || suffix.IsNull() || suffix.length > this->length)
+    {
+        return false;
+    }
+
+    //Get the real suffix of the string - its suffix with the same length as the given suffix
+    String realSuffix = this->GetSubstring(this->length - suffix.length, suffix.length);
+    //Check if the real prefix is the same as the given prefix
+    return (suffix == realSuffix);
+}
+
 unsigned String::Count(char c)
 {
     unsigned counter = 0;

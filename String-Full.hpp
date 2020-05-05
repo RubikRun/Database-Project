@@ -2,5 +2,6 @@
 #include "StringNumerical.hpp"
 #include "StringOperations.hpp"
 #include "StringReading.hpp"
+#include "StringViewMode.hpp"
 #include "String.hpp"
 #include "StringWriting.hpp"
