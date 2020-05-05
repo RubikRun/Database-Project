@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 
 //A data structure for keeping a dynamic array of objects
