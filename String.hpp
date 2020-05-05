@@ -1,6 +1,7 @@
 #pragma once
 
 #include "StringBasic.hpp"
+#include "Vector.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -83,6 +84,9 @@ class String
 
         //Extracts a substring specified with a begin index and a length
         String GetSubstring(unsigned begin, unsigned length);
+
+        //Splits the string by a separator and returns a vector of the resulting parts
+        Vector<String> Split(char separator = ' ');
 
         //Counts the occurrences of a char in the string
         unsigned Count(char c);

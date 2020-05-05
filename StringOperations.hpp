@@ -1,6 +1,7 @@
 #pragma once
 
 #include "String.hpp"
+#include "Vector.hpp"
 
 String String::operator+(const char* charArray)
 {
@@ -96,6 +97,37 @@ String String::GetSubstring(unsigned begin, unsigned length)
     delete[] charArray;
     
     return string;
+}
+
+Vector<String> String::Split(char separator)
+{
+    Vector<String> splitted;
+    //If the string is null, return an empty vector
+    if (this->IsNull())
+    {
+        return splitted;
+    }
+    //The first part begins at the beginning of the string
+    unsigned partBegin = 0;
+    //Traverse the string
+    for (int i = 0; i < this->length; i++)
+    {
+        //If we reach a separator
+        if (this->charArray[i] == separator)
+        {
+            //The current part is from its beginning to right before the separator
+            unsigned partLength = i - partBegin;
+            String part = this->GetSubstring(partBegin, partLength);
+            splitted.Add(part);
+            //Set the next part's beginning to be right after the separator
+            partBegin = i + 1;
+        }
+    }
+    //The last part ends not on a separator, but on the end of the string
+    String lastPart = this->GetSubstring(partBegin, this->length - partBegin);
+    splitted.Add(lastPart);
+    //Return the splitted string, a vector of the resulting parts
+    return splitted;
 }
 
 unsigned String::Count(char c)
