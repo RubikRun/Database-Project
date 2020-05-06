@@ -18,16 +18,16 @@ class Vector
         //Creates a vector from another vector
         Vector(const Vector<T>& another);
 
-        //Assigns the other vector to this vector
-        Vector<T>& operator=(const Vector<T>& another);
-
         //Returns the length of the vector
         unsigned GetLength() const;
+
+        //Assigns another vector to this vector
+        Vector<T>& operator=(const Vector<T>& another);
 
         //Writes the elements of the vector to a stream, separated by a separator
         void Write(std::ostream& stream = std::cout, char separator = '\n') const;
 
-        //Prints the element of the vector
+        //Prints the elements of the vector
         void Print() const;
 
         //Returns a reference to the object at the given index
@@ -36,7 +36,7 @@ class Vector
         //Adds an element to the vector
         void Add(T element);
 
-        //Remove the element at the given index
+        //Removes the element at the given index
         void RemoveAt(unsigned i);
 
         //Checks if the vector is empty
@@ -56,17 +56,36 @@ class Vector
 template <typename T>
 Vector<T>::Vector()
 {
-    //Make the vector empty
-    this->~Vector();
+    //Create an empty vector
+    this->array = nullptr;
+    this->length = 0;
 }
 
 template <typename T>
 Vector<T>::Vector(const Vector<T>& another)
 {
-    //Assign the other vector to this vector
-    *this = another;
+    //Create an empty vector
+    this->array = nullptr;
+    this->length = 0;
 
-    another.IsEmpty();
+    //If the other vector is not empty, copy it to this vector
+    if (!another.IsEmpty())
+    {
+        this->length = another.length;
+        this->capacity = another.capacity;
+        this->array = new T[this->capacity];
+        for (int i = 0; i < another.length; i++)
+        {
+            this->array[i] = another.array[i];
+        }
+    }
+}
+
+template <typename T>
+unsigned Vector<T>::GetLength() const
+{
+    //Return the length of the vector
+    return this->length;
 }
 
 template <typename T>
@@ -77,31 +96,23 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& another)
     {
         return *this;
     }
+
     //Empty this vector
     this->~Vector<T>();
-    //If the other vector is also empty, we are ready
-    if (another.IsEmpty())
+    //If the other vector is not empty, copy it to this vector
+    if (!another.IsEmpty())
     {
-        return *this;
+        this->length = another.length;
+        this->capacity = another.capacity;
+        this->array = new T[this->capacity];
+        for (int i = 0; i < another.length; i++)
+        {
+            this->array[i] = another.array[i];
+        }
     }
 
-    //Copy the other vector's length and capacity
-    this->length = another.length;
-    this->capacity = another.capacity;
-    //Copy the other vector's elements
-    this->array = new T[this->capacity];
-    for (int i = 0; i < another.length; i++)
-    {
-        this->array[i] = another.array[i];
-    }
     //Return this vector, so that we can do multiple assignment
     return *this;
-}
-
-template <typename T>
-unsigned Vector<T>::GetLength() const
-{
-    return this->length;
 }
 
 template <typename T>
@@ -137,7 +148,7 @@ template <typename T>
 void Vector<T>::Add(T element)
 {
     //If the vector is empty, create a vector with only the element
-    if (this->array == nullptr)
+    if (this->IsEmpty())
     {
         this->array = new T[1];
         this->array[0] = element;
@@ -165,6 +176,7 @@ void Vector<T>::RemoveAt(unsigned index)
     if (this->length == 1)
     {
         this->~Vector<T>();
+        return;
     }
 
     //Remove the element from the array
@@ -174,7 +186,7 @@ void Vector<T>::RemoveAt(unsigned index)
     }
     this->length--;
 
-    //If the vector is half full or less, we can cut the capacity in half
+    //If the vector is half-full or less, we can cut the capacity in half
     if (this->length <= this->capacity / 2)
     {
         this->ChangeCapacity(this->capacity / 2);
@@ -217,7 +229,7 @@ template <typename T>
 Vector<T>::~Vector()
 {
     //If the vector is not empty, free the memory
-    if (this->array == nullptr)
+    if (this->array != nullptr)
     {
         delete[] this->array;
     }

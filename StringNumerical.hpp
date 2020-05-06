@@ -1,54 +1,95 @@
 #pragma once
 
 #include "String.hpp"
+#include "BasicFunctions.hpp"
 
-bool String::IsNumerical()
+bool String::IsInt() const
 {
-    //If the string is null or empty, it is not numerical
+    //If the string is null or empty, it is not parsable to int
     if (this->IsNull() || this->length == 0)
     {
         return false;
     }
-    //Check for a sign in front and find where digits begin
-    int digitsBegin = 0;
-    if (this->charArray[0] == '+' || this->charArray[0] == '-')
+
+    char* p = this->charArray;
+    //If there is a sign in front, skip it, it's fine
+    if (*p == '+' || *p == '-')
     {
-        digitsBegin = 1;
+        p++;
     }
-    //There can be at most 1 point in a number
-    if (this->Count('.') > 1)
+    //There should be digits after that
+    if (*p == '\0')
     {
         return false;
     }
-    //Traverse digits (and point)
-    for (int i = digitsBegin; i < this->length; ++i)
+
+    //All remaining characters should be digits
+    for (; *p != '\0'; p++)
+    {
+        if (!IsDigit(*p))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool String::IsDouble() const
+{
+    //If the string is null or empty, it is not parsable to double
+    if (this->IsNull() || this->length == 0)
+    {
+        return false;
+    }
+
+    unsigned pointsCount = this->Count('.');
+    //There should be at most one decimal point in the number
+    if (pointsCount > 1)
+    {
+        return false;
+    }
+    //If there is no decimal point, we check for int
+    if (pointsCount == 0)
+    {
+        return this->IsInt();
+    }
+
+    //Find where digits begin by checking for a sign in front
+    int digitsBegin = 0;
+    if (this->charArray[0] == '+' || this->charArray[0] == '-')
+    {
+        digitsBegin++;
+    }
+
+    //All remaining characters should be digits and a point
+    for (int i = digitsBegin; i < this->length; i++)
     {
         char c = this->charArray[i];
-        //If a digit, it's fine
+        //If the current character is a digit, it's fine
         if (IsDigit(c))
         {
             continue;
         }
-        //Otherwise, it should be a point
-        if (c != '.')
-        {
-            return false;
-        }
-        //and it should have digits on both sides,
-        //so exclusively between first and last digit
-        if (i <= digitsBegin || i >= this->length - 1)
+        //Otherwise it should be the point and there should be digits on its both sides
+        if (c != '.' || i <= digitsBegin || i >= this->length - 1)
         {
             return false;
         }
     }
-    //At this point everything is checked
+
     return true;
 }
 
-int String::ParseToInt()
+bool String::IsNumerical() const
+{
+    return (this->IsInt() || this->IsDouble());
+}
+
+int String::ParseToInt() const
 {
     //If the string is not numerical, we cannot parse it
-    if (!this->IsNumerical())
+    if (!this->IsInt())
     {
         return 0;
     }
@@ -68,15 +109,13 @@ int String::ParseToInt()
         result = result * 10 + ParseToDigit(*p);
         p++;
     }
-    //We traversed digits and got a positive number,
-    //but it could be negative
+    //We traversed digits and got a positive number, but it could be negative
     return negative ? (-result) : result;
 }
 
 String ParseFromInt(int n)
 {
-    //If the number is negative,
-    //we'll parse it as positive and then flip the sign
+    //If the number is negative, we'll parse it as positive and then flip the sign
     bool negative = (n < 0);
     if (negative)
     {
@@ -106,10 +145,10 @@ String ParseFromInt(int n)
     return string;
 }
 
-double String::ParseToDouble()
+double String::ParseToDouble() const
 {
     //If the string is not numerical, we cannot parse it
-    if (!this->IsNumerical())
+    if (!this->IsDouble())
     {
         return 0;
     }

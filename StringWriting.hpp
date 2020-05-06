@@ -1,8 +1,9 @@
 #pragma once
 
 #include "String.hpp"
+#include "StringViewer.hpp"
 
-void String::Write(std::ostream& stream)
+void String::Write(std::ostream& stream) const
 {
     //If the string is not null, write it to the stream
     if (!this->IsNull())

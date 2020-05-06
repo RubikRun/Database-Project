@@ -2,7 +2,7 @@
 
 #include "String.hpp"
 
-void String::ReadNext(std::istream& stream, char separator, bool endOnNewLine)
+String& String::ReadNext(std::istream& stream, char separator, bool endOnNewLine)
 {
     //Destroy the string, in case it's not null
     this->~String();
@@ -30,18 +30,24 @@ void String::ReadNext(std::istream& stream, char separator, bool endOnNewLine)
         this->charArray = buffer;
         this->length++;
     }
+
+    return *this;
 }
 
-void String::ReadLine(std::istream& stream)
+String& String::ReadLine(std::istream& stream)
 {
     //Read from stream until we reach a new line
     this->ReadNext(stream, '\n');
+
+    return *this;
 }
 
-void String::ReadWord(std::istream& stream)
+String& String::ReadWord(std::istream& stream)
 {
     //Read from stream until we reach a space or a new line
     this->ReadNext(stream, ' ', true);
+
+    return *this;
 }
 
 std::istream& operator>>(std::istream& stream, String& string)
