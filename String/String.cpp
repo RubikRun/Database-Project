@@ -6,21 +6,25 @@ using namespace std;
 
 const double EPSILON = 0.001;
 
+//Checks if a character is a digit 0-9
 bool IsDigit(char c)
 {
     return (c >= '0' && c <= '9');
 }
 
+//Parses a character to a digit
 int ParseToDigit(char c)
 {
     return c - '0';
 }
 
+//Parses a digit to a character
 char ParseFromDigit(int d)
 {
     return d + '0';
 }
 
+//Counts the number of the digits in a given number
 int CountDigits(int n)
 {
     int digits = 0;
@@ -34,6 +38,7 @@ int CountDigits(int n)
     return digits;
 }
 
+//Returns the absolute value of a number (or another object)
 template <typename T>
 T absVal(T x)
 {
@@ -44,6 +49,7 @@ T absVal(T x)
     return x;
 }
 
+//Checks if two numbers are close enough, within an epsilon distance
 bool CloseEnough(double a, double b)
 {
     return ( absVal(a - b) <= EPSILON );
