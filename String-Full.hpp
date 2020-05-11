@@ -1,7 +1,0 @@
-#include "BasicFunctions.hpp"
-#include "String.hpp"
-#include "StringNumerical.hpp"
-#include "StringOperations.hpp"
-#include "StringReading.hpp"
-#include "StringViewer.hpp"
-#include "StringWriting.hpp"

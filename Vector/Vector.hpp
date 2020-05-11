@@ -2,7 +2,6 @@
 
 #include <iostream>
 
-//A data structure for keeping a dynamic array of objects
 template <typename T>
 class Vector
 {
@@ -15,14 +14,17 @@ class Vector
         //Creates an empty vector
         Vector();
 
+        //Creates a vector with a given length and fills it with a given value
+        Vector(unsigned givenLength, T value);
+
         //Creates a vector from another vector
         Vector(const Vector<T>& another);
 
-        //Returns the length of the vector
-        unsigned GetLength() const;
-
         //Assigns another vector to this vector
         Vector<T>& operator=(const Vector<T>& another);
+
+        //Returns the length of the vector
+        unsigned GetLength() const;
 
         //Writes the elements of the vector to a stream, separated by a separator
         void Write(std::ostream& stream = std::cout, char separator = '\n') const;
@@ -42,6 +44,9 @@ class Vector
         //Checks if the vector is empty
         bool IsEmpty() const;
 
+        //Empties the vector. You can specify to not free the memory
+        void Empty(bool freeMemory = true);
+
     private:
 
         //Creates a new array with a given capacity and copies the elements to it
@@ -49,7 +54,7 @@ class Vector
 
     public:
 
-        //Empties the vector
+        //Frees the memory
         ~Vector();
 };
 
@@ -57,35 +62,42 @@ template <typename T>
 Vector<T>::Vector()
 {
     //Create an empty vector
-    this->array = nullptr;
-    this->length = 0;
+    this->Empty(false);
+}
+
+template <typename T>
+Vector<T>::Vector(unsigned givenLength, T value)
+{
+    //If given length is 0, create an empty vector
+    if (givenLength == 0)
+    {
+        this->Empty(false);
+        return;
+    }
+
+    //Find the capacity needed and create the array
+    this->capacity = 1;
+    while (givenLength > this->capacity)
+    {
+        this->capacity *= 2;
+    }
+    this->array = new T[this->capacity];
+    //Fill the array with the given value
+    this->length = givenLength;
+    for (int i = 0; i < this->length; i++)
+    {
+        this->array[i] = value;
+    }
 }
 
 template <typename T>
 Vector<T>::Vector(const Vector<T>& another)
 {
     //Create an empty vector
-    this->array = nullptr;
-    this->length = 0;
+    this->Empty(false);
 
-    //If the other vector is not empty, copy it to this vector
-    if (!another.IsEmpty())
-    {
-        this->length = another.length;
-        this->capacity = another.capacity;
-        this->array = new T[this->capacity];
-        for (int i = 0; i < another.length; i++)
-        {
-            this->array[i] = another.array[i];
-        }
-    }
-}
-
-template <typename T>
-unsigned Vector<T>::GetLength() const
-{
-    //Return the length of the vector
-    return this->length;
+    //Assign the other vector to this vector
+    *this = another;
 }
 
 template <typename T>
@@ -98,21 +110,25 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& another)
     }
 
     //Empty this vector
-    this->~Vector<T>();
-    //If the other vector is not empty, copy it to this vector
-    if (!another.IsEmpty())
+    this->Empty();
+    //Copy the other vector to this vector
+    this->length = another.length;
+    this->capacity = another.capacity;
+    this->array = new T[this->capacity];
+    for (int i = 0; i < this->length; i++)
     {
-        this->length = another.length;
-        this->capacity = another.capacity;
-        this->array = new T[this->capacity];
-        for (int i = 0; i < another.length; i++)
-        {
-            this->array[i] = another.array[i];
-        }
+        this->array[i] = another.array[i];
     }
 
     //Return this vector, so that we can do multiple assignment
     return *this;
+}
+
+template <typename T>
+unsigned Vector<T>::GetLength() const
+{
+    //Return the length of the vector
+    return this->length;
 }
 
 template <typename T>
@@ -175,7 +191,7 @@ void Vector<T>::RemoveAt(unsigned index)
     //If there is only one element in the vector, then the vector becomes empty
     if (this->length == 1)
     {
-        this->~Vector<T>();
+        this->Empty();
         return;
     }
 
@@ -196,7 +212,18 @@ void Vector<T>::RemoveAt(unsigned index)
 template <typename T>
 bool Vector<T>::IsEmpty() const
 {
-    return (this->array == nullptr && this->length == 0);
+    return (this->array == nullptr);
+}
+
+template <typename T>
+void Vector<T>::Empty(bool freeMemory)
+{
+    if (this->array != nullptr && freeMemory)
+    {
+        delete[] this->array;
+    }
+    this->array = nullptr;
+    this->length = this->capacity = 0;
 }
 
 template <typename T>
@@ -228,12 +255,6 @@ void Vector<T>::ChangeCapacity(unsigned newCapacity)
 template <typename T>
 Vector<T>::~Vector()
 {
-    //If the vector is not empty, free the memory
-    if (this->array != nullptr)
-    {
-        delete[] this->array;
-    }
-    //Make the vector empty
-    this->array = nullptr;
-    this->length = this->capacity = 0;
+    //Empty the vector
+    this->Empty();
 }

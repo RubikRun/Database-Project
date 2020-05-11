@@ -2,6 +2,9 @@
 #include "BasicFunctions.hpp"
 #include <cstring>
 
+#include <iostream>
+using namespace std;
+
 String::String()
 {
     //Create a null string
@@ -47,6 +50,11 @@ unsigned String::GetLength() const
 {
     //Return the string's length
     return this->length;
+}
+
+const char* String::GetCharArray() const
+{
+    return this->charArray;
 }
 
 bool String::IsNull() const
@@ -356,6 +364,17 @@ String ParseFromInt(int n)
     delete[] charArray;
 
     return string;
+}
+
+int ReadInt(std::istream& stream)
+{
+    //Read the number as a string
+    String string;
+    string.ReadNext(stream, ' ', true);
+    //Parse it to int
+    int result = string.ParseToInt();
+
+    return result;
 }
 
 double String::ParseToDouble() const

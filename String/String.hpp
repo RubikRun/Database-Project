@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Vector.hpp"
-
-#include <iostream>
-#include <cstring>
+#include "../Vector/Vector.hpp"
 
 class String
 {
@@ -23,6 +20,8 @@ class String
 
         //Returns the string's length
         unsigned GetLength() const;
+
+        const char* GetCharArray() const;
 
         //Checks if the string is null
         bool IsNull() const;
@@ -71,6 +70,9 @@ class String
         //Parses the string to an int
         int ParseToInt() const;
 
+        //Reads an int from the stream
+        friend int ReadInt(std::istream& stream);
+
         //Parses an int to a string
         friend String ParseFromInt(int n);
 
@@ -102,101 +104,14 @@ class String
         ~String();
 };
 
-String::String()
-{
-    //Create a null string
-    this->charArray = nullptr;
-    this->length = 0;
-}
+String operator+(const char* charArray, const String& another);
 
-String::String(const char* charArray)
-{
-    //If the char array is null, create a null string
-    if (charArray == nullptr)
-    {
-        this->charArray = nullptr;
-        this->length = 0;
-    }
-    //Otherwise copy the char array
-    else
-    {
-        this->length = strlen(charArray);
-        this->charArray = new char[this->length + 1];
-        strcpy(this->charArray, charArray);
-    }
-}
+std::istream& operator>>(std::istream& stream, String& string);
 
-String::String(const String& another)
-{
-    //If the other string is null, create a null string
-    if (another.IsNull())
-    {
-        this->charArray = nullptr;
-        this->length = 0;
-    }
-    //Otherwise copy the other string
-    else
-    {
-        this->length = another.length;
-        this->charArray = new char[this->length + 1];
-        strcpy(this->charArray, another.charArray);
-    }
-}
+std::ostream& operator<<(std::ostream& stream, String string);
 
-unsigned String::GetLength() const
-{
-    //Return the string's length
-    return this->length;
-}
+String ParseFromInt(int n);
 
-bool String::IsNull() const
-{
-    //Check if the char array is null
-    return (this->charArray == nullptr);
-}
+int ReadInt(std::istream& stream = std::cin);
 
-String& String::operator=(const String& another)
-{
-    //If this string is the other string, do nothing
-    if (this == &another)
-    {
-        //nothing
-    }
-    else
-    {
-        //First destroy this string
-        this->~String();
-        //If the other string is not null, copy it to this string
-        if (!another.IsNull())
-        {
-            this->length = another.length;
-            this->charArray = new char[this->length + 1];
-            strcpy(this->charArray, another.charArray);
-        }
-    }
-    //Return this string, so that we can do multiple assignment
-    return *this;
-}
-
-bool String::operator==(const String& another) const
-{
-    //If either one of the strings is null, they are not equal
-    if (this->IsNull() || another.IsNull())
-    {
-        return false;
-    }
-    //Otherwise compare their char arrays
-    return (strcmp(this->charArray, another.charArray) == 0);
-}
-
-String::~String()
-{
-    //Free the memory of the string's char array, if not null
-    if (!this->IsNull())
-    {
-        delete[] this->charArray;
-        //and make it null
-        this->charArray = nullptr;
-        this->length = 0;
-    }
-}
+String ParseFromDouble(double d);
