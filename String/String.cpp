@@ -1,8 +1,7 @@
 #include "String.hpp"
-#include <cstring>
 
 #include <iostream>
-using namespace std;
+#include <cstring>
 
 const double EPSILON = 0.001;
 
