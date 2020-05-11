@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "../Debugger/Debugger.hpp"
 
 template <typename T>
 class Vector
@@ -29,7 +30,7 @@ class Vector
         //Writes the elements of the vector to a stream, separated by a separator
         void Write(std::ostream& stream = std::cout, char separator = '\n') const;
 
-        //Prints the elements of the vector
+        //Prints the elements of the vector to the screen
         void Print() const;
 
         //Returns a reference to the object at the given index
@@ -45,7 +46,7 @@ class Vector
         bool IsEmpty() const;
 
         //Empties the vector. You can specify to not free the memory
-        void Empty(bool freeMemory = true);
+        void Clear(bool freeMemory = true);
 
     private:
 
@@ -62,7 +63,7 @@ template <typename T>
 Vector<T>::Vector()
 {
     //Create an empty vector
-    this->Empty(false);
+    this->Clear(false);
 }
 
 template <typename T>
@@ -71,7 +72,7 @@ Vector<T>::Vector(unsigned givenLength, T value)
     //If given length is 0, create an empty vector
     if (givenLength == 0)
     {
-        this->Empty(false);
+        this->Clear(false);
         return;
     }
 
@@ -94,7 +95,7 @@ template <typename T>
 Vector<T>::Vector(const Vector<T>& another)
 {
     //Create an empty vector
-    this->Empty(false);
+    this->Clear(false);
 
     //Assign the other vector to this vector
     *this = another;
@@ -109,8 +110,8 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& another)
         return *this;
     }
 
-    //Empty this vector
-    this->Empty();
+    //Clear this vector
+    this->Clear();
     //Copy the other vector to this vector
     this->length = another.length;
     this->capacity = another.capacity;
@@ -191,7 +192,7 @@ void Vector<T>::RemoveAt(unsigned index)
     //If there is only one element in the vector, then the vector becomes empty
     if (this->length == 1)
     {
-        this->Empty();
+        this->Clear();
         return;
     }
 
@@ -216,7 +217,7 @@ bool Vector<T>::IsEmpty() const
 }
 
 template <typename T>
-void Vector<T>::Empty(bool freeMemory)
+void Vector<T>::Clear(bool freeMemory)
 {
     if (this->array != nullptr && freeMemory)
     {
@@ -256,5 +257,5 @@ template <typename T>
 Vector<T>::~Vector()
 {
     //Empty the vector
-    this->Empty();
+    this->Clear();
 }

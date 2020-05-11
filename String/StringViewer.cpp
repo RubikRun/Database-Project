@@ -1,6 +1,34 @@
 #include "StringViewer.hpp"
 #include "String.hpp"
-#include "Constants.hpp"
+
+const String DASHES = "----------------";
+
+const String STRINGVIEWMODE = "STRING VIEW MODE";
+
+const String PAGE = "Page ";
+
+const String COMMANDWINDOW = "Command: ";
+
+const String HELP_MESSAGE = "This is the string view mode. It's used to easily view big strings. "
+"It splits the string to pages, with no more than n lines per page. "
+"You can navigate between pages using the commands \"nextpage\", that goes to the next page, "
+"\"prevpage\", that goes to the previous page, \"goto <page number>\" that goes to a specific page "
+"and you can exit the string view mode with the \"exit\" command. ";
+
+const String NOTVALIDCOMMAND_MESSAGE = "Not a valid command. Type \"help\" if you don't know what to do, "
+"or \"exit\" to exit the string view mode.";
+
+const String NEXTPAGE_COMMAND = "nextpage";
+const String PREVPAGE_COMMAND = "prevpage";
+const String GOTO_COMMAND = "goto";
+const String HELP_COMMAND = "help";
+const String EXIT_COMMAND = "exit";
+
+const String TESTSTRING = "alabala\nhmm\ni ko sq\nnqkvi redove tuka\noshte edin\nyea\nnz ko sq\n"
+"mii aide oshte\nda ima tam\nda testvam\noshte redove\ndadada\npickle riiiick\nfrench\n"
+"hiphop\naide de\nkolko oshte\nmii oshte tolkova\nmaleee\nmn ue\nne e nujno da sa tolko dulgi ama da vidim\n"
+"oshteee\nalabala\noctopus\nmi e lubimiq\nalbum\nno lubimata mi\npesen\nne e ot nego\n"
+"a e lateralus\nna tool\nbasi qkata pesen\naide stiga";
 
 StringViewer::StringViewer(const String& string, unsigned linesPerPage)
 {
@@ -28,7 +56,7 @@ void StringViewer::ViewMode()
         system("cls");
         //Show the current screen + command window
         std::cout << this->currentScreen;
-        std::cout << STRINGVIEWMODE_COMMANDWINDOW;
+        std::cout << COMMANDWINDOW;
         //Read the next command
         std::cin >> command;
     }
@@ -39,15 +67,15 @@ void StringViewer::ViewMode()
 bool StringViewer::ExecuteCommand(const String& command)
 {
     //Handle each command type separately
-    if (command == STRINGVIEWMODE_NEXTPAGE_COMMAND)
+    if (command == NEXTPAGE_COMMAND)
     {
         this->NextPage();
     }
-    else if (command == STRINGVIEWMODE_PREVPAGE_COMMAND)
+    else if (command == PREVPAGE_COMMAND)
     {
         this->PrevPage();
     }
-    else if (command.StartsWith(STRINGVIEWMODE_GOTO_COMMAND) && command.Split().GetLength() == 2)
+    else if (command.StartsWith(GOTO_COMMAND) && command.Split().GetLength() == 2)
     {
         //Get the page number, the second word of the command
         Vector<String> args = command.Split();
@@ -56,18 +84,18 @@ bool StringViewer::ExecuteCommand(const String& command)
         //Execute command
         this->GoTo(pageNumber - 1);
     }
-    else if (command == STRINGVIEWMODE_HELP_COMMAND)
+    else if (command == HELP_COMMAND)
     {
         this->Help();
     }
-    else if (command == STRINGVIEWMODE_EXIT_COMMAND)
+    else if (command == EXIT_COMMAND)
     {
         return false;
     }
     else
     {
         this->currentScreen = this->GetPageWindow(this->currentPage) + "\n" +
-        STRINGVIEWMODE_NOTVALIDCOMMAND_MESSAGE + "\n";
+        NOTVALIDCOMMAND_MESSAGE + "\n";
     }
 
     return true;
@@ -121,17 +149,17 @@ void StringViewer::GoTo(unsigned requestPage)
 void StringViewer::Help()
 {
     this->currentScreen = this->GetPageWindow(this->currentPage) + "\n"
-    + STRINGVIEWMODE_HELP_MESSAGE + "\n\n";
+    + HELP_MESSAGE + "\n\n";
 }
 
 String StringViewer::GetPageWindow(unsigned pageIndex)
 {
     String page = this->GetPage(pageIndex);
 
-    return STRINGVIEWMODE_DASHES + STRINGVIEWMODE + STRINGVIEWMODE_DASHES + "\n" + 
-    STRINGVIEWMODE_DASHES + STRINGVIEWMODE_PAGE + ParseFromInt(pageIndex + 1) + STRINGVIEWMODE_DASHES + "\n" +
+    return DASHES + STRINGVIEWMODE + DASHES + "\n" + 
+    DASHES + PAGE + ParseFromInt(pageIndex + 1) + DASHES + "\n" +
     page + 
-    STRINGVIEWMODE_DASHES + STRINGVIEWMODE_DASHES + STRINGVIEWMODE_DASHES + "\n";
+    DASHES + DASHES + DASHES + "\n";
 }
 
 String StringViewer::GetPage(unsigned pageIndex)
