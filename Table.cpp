@@ -1,4 +1,5 @@
 #include "Table.hpp"
+#include "String/StringViewer.hpp"
 
 #include <fstream>
 #include <iomanip>
@@ -26,21 +27,19 @@ const Vector<String>& colNames, const Vector<ValueType>& colTypes, const Vector<
 
 void Table::PrintAll()
 {
-    const int CELLWIDTH = 10;
-
     std::cout << "Name: " << this->name << std::endl;
     std::cout << "Filename: " << this->filename << std::endl;
     std::cout << "Number of rows: " << this->rowsCount << std::endl;
     std::cout << "Number of columns: " << this->colsCount << std::endl;
     std::cout << std::endl;
 
-    std::cout << std::left << std::setw(CELLWIDTH) << "";
+    std::cout << std::left << std::setw(CELL_WIDTH) << "";
     for (int i = 0; i < colsCount; i++)
     {
-         std::cout << std::left << std::setw(CELLWIDTH) << this->colNames[i];
+         std::cout << std::left << std::setw(CELL_WIDTH) << this->colNames[i];
     }
     std::cout << std::endl;
-    for (int i = 0; i < (colsCount + 1) * CELLWIDTH; i++)
+    for (int i = 0; i < (colsCount + 1) * CELL_WIDTH; i++)
     {
         std::cout << "-";
     }
@@ -48,10 +47,10 @@ void Table::PrintAll()
 
     for (int i = 0; i < rowsCount; i++)
     {
-        std::cout << std::left << std::setw(CELLWIDTH) << i + 1;
+        std::cout << std::left << std::setw(CELL_WIDTH) << i + 1;
         for (int j = 0; j < colsCount; j++)
         {
-             std::cout << std::left << std::setw(CELLWIDTH) << this->rows[i][j];
+             std::cout << std::left << std::setw(CELL_WIDTH) << this->rows[i][j];
         }
         std::cout << std::endl;
     }
@@ -189,4 +188,98 @@ void Table::WriteToFile(String filename)
     {
         std::cerr << "Error: Cannot close file: " << filename << std::endl;
     }
+}
+
+//Fills whats left of the last cell, so that it's exactly the width needed
+void FillCell(String& str)
+{
+    if (str.GetLength() % CELL_WIDTH != 0)
+    {
+        unsigned charsLeft = CELL_WIDTH - str.GetLength() % CELL_WIDTH;
+        str += String(CELL_FILL_CHAR, charsLeft);
+    }
+}
+
+String Table::GetColsString()
+{
+    //Put an empty cell in the beginning, for the column of row numbers
+    String colsString = String(CELL_FILL_CHAR, CELL_WIDTH);
+
+    //Put columns' names
+    for (int i = 0; i < this->colsCount; i++)
+    {
+        colsString += this->colNames[i];
+        FillCell(colsString);
+    }
+
+    return colsString;
+}
+
+String Table::GetRowString(unsigned row)
+{
+    //Check if the requested row is valid
+    if (row >= this->rowsCount)
+    {
+        return String();
+    }
+
+    //Put the row's number first
+    String rowString = ParseFromInt(row + 1);
+    FillCell(rowString);
+
+    //Put the value of each column
+    for (int i = 0; i < this->colsCount; i++)
+    {
+        rowString += this->rows[row][i];
+        FillCell(rowString);
+    }
+
+    return rowString;
+}
+
+Vector<unsigned> Table::SelectIndecies(unsigned searchCol, String searchValue)
+{
+    //Check is the given column is valid
+    if (searchCol >= this->colsCount)
+    {
+        searchCol = INVALID_COLUMN;
+    }
+
+    //Find all rows with search value in the search column
+    //or if search column is invalid, just add all rows
+    Vector<unsigned> foundRows;
+    for (int i = 0; i < this->rowsCount; i++)
+    {
+        if (searchCol == INVALID_COLUMN || this->rows[i][searchCol] == searchValue)
+        {
+            foundRows.Add(i);
+        }
+    }
+
+    return foundRows;
+}
+
+void Table::SelectAndView(unsigned searchCol, String searchValue)
+{
+    //Find the rows
+    Vector<unsigned> rowIndecies = this->SelectIndecies(searchCol, searchValue);
+
+    //Create a string of all the rows
+    String rowsString = "";
+    for (int i = 0; i < rowIndecies.GetLength(); i++)
+    {
+        unsigned currRowIndex = rowIndecies[i];
+        String currRowString = this->GetRowString(currRowIndex);
+        rowsString += currRowString;
+
+        if (i < rowIndecies.GetLength() - 1)
+        {
+            rowsString += "\n";
+        }
+    }
+
+    //View rows with a string viewer
+    String colsString = this->GetColsString() + "\n";
+    StringViewer stringViewer(rowsString, colsString, 5);
+    stringViewer.ViewMode();
 }

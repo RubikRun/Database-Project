@@ -95,6 +95,18 @@ String::String(const String& another)
     }
 }
 
+String::String(const char c, unsigned repeat)
+{
+    this->length = repeat;
+
+    this->charArray = new char[this->length + 1];
+    for (int i = 0; i < this->length; i++)
+    {
+        this->charArray[i] = c;
+    }
+    this->charArray[this->length] = '\0';
+}
+
 unsigned String::GetLength() const
 {
     //Return the string's length
@@ -137,7 +149,12 @@ String& String::operator=(const String& another)
 
 bool String::operator==(const String& another) const
 {
-    //If either one of the strings is null, they are not equal
+    //If both strings are null, they are equal
+    if (this->IsNull() && another.IsNull())
+    {
+        return true;
+    }
+    //If only one of the strings is null, they are not equal
     if (this->IsNull() || another.IsNull())
     {
         return false;

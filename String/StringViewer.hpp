@@ -19,13 +19,23 @@ class StringViewer
     //The total number of pages needed
     unsigned pagesCount;
 
+    //The max number of characters of a line on a page
+    unsigned maxPageWidth;
+
+    //Formatting stuff
+    String dashesForStringViewer;
+    String dashesForPage;
+    String dashesForPageEnd;
+    
+    String pageBeginning;
+
     //The current screen
     String currentScreen;
 
     public:
 
         //Creates a string viewer for the given string with the specified number of lines per page
-        StringViewer(const String& string, unsigned linesPerPage = 10);
+        StringViewer(const String& string, const String& pageBeginning = "", unsigned linesPerPage = 10);
 
         //Enters view mode
         void ViewMode();

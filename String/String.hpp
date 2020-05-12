@@ -18,6 +18,9 @@ class String
         //Creates a string from another string
         String(const String& another);
 
+        //Creates a string of repeated characters
+        String(const char c, unsigned repeat);
+
         //Returns the string's length
         unsigned GetLength() const;
 

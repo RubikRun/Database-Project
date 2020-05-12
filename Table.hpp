@@ -6,6 +6,10 @@
 
 typedef Vector<String> Row;
 
+const unsigned INVALID_COLUMN = 0xffffffff;
+const unsigned CELL_WIDTH = 20;
+const char CELL_FILL_CHAR = ' ';
+
 class Table
 {
     //The name of the table and the name of the file where it's stored
@@ -44,6 +48,20 @@ class Table
 
         //Writes the table to a file
         void WriteToFile(String filename);
+
+        //Creates a nicely formatted string for each column's name
+        String GetColsString();
+
+        //Creates a nicely formatted string for the requested row, and returns it
+        String GetRowString(unsigned row);
+
+        //Returns the indecies of all rows that have a given value in a given column
+        //If no column specified, returns all rows' indecies
+        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
+
+        //Find all rows that have a given value in a given column
+        //and view them with a string viewer
+        void SelectAndView(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
 };
 
 Table ReadTable(std::istream& stream);

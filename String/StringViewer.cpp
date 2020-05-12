@@ -1,13 +1,12 @@
 #include "StringViewer.hpp"
 #include "String.hpp"
-
-const String DASHES = "----------------";
+#include "../Debugger/Debugger.hpp"
 
 const String STRINGVIEWMODE = "STRING VIEW MODE";
 
 const String PAGE = "Page ";
 
-const String COMMANDWINDOW = "Command: ";
+const String COMMAND_WINDOW = "Command: ";
 
 const String HELP_MESSAGE = "This is the string view mode. It's used to easily view big strings. "
 "It splits the string to pages, with no more than n lines per page. "
@@ -30,13 +29,31 @@ const String TESTSTRING = "alabala\nhmm\ni ko sq\nnqkvi redove tuka\noshte edin\
 "oshteee\nalabala\noctopus\nmi e lubimiq\nalbum\nno lubimata mi\npesen\nne e ot nego\n"
 "a e lateralus\nna tool\nbasi qkata pesen\naide stiga";
 
-StringViewer::StringViewer(const String& string, unsigned linesPerPage)
+StringViewer::StringViewer(const String& string, const String& pageBeginning, unsigned linesPerPage)
 {
     this->string = string;
+    this->pageBeginning = pageBeginning;
     this->linesPerPage = linesPerPage;
 
     //Split the string to lines
     this->lines = string.Split('\n');
+
+    //Find the max page width
+    this->maxPageWidth = 0;
+    for (int i = 0; i < this->lines.GetLength(); i++)
+    {
+        unsigned currLineWidth = this->lines[i].GetLength();
+        if (maxPageWidth < currLineWidth)
+        {
+            maxPageWidth = currLineWidth;
+        }
+    }
+
+    //Find the dashes for string formatting
+    this->dashesForStringViewer = String('-', (this->maxPageWidth - STRINGVIEWMODE.GetLength()) / 2);
+    this->dashesForPage = String('-', (this->maxPageWidth - PAGE.GetLength()) / 2);
+    this->dashesForPageEnd = String('-', this->maxPageWidth);
+
     //We begin the view mode on page 1
     this->currentPage = 0;
     //Calculate the number of pages needed
@@ -56,12 +73,14 @@ void StringViewer::ViewMode()
         system("cls");
         //Show the current screen + command window
         std::cout << this->currentScreen;
-        std::cout << COMMANDWINDOW;
+        std::cout << COMMAND_WINDOW;
         //Read the next command
         std::cin >> command;
     }
     //Execute command and stop if the command is "exit"
     while (this->ExecuteCommand(command));
+
+    system("cls");
 }
 
 bool StringViewer::ExecuteCommand(const String& command)
@@ -156,15 +175,15 @@ String StringViewer::GetPageWindow(unsigned pageIndex)
 {
     String page = this->GetPage(pageIndex);
 
-    return DASHES + STRINGVIEWMODE + DASHES + "\n" + 
-    DASHES + PAGE + ParseFromInt(pageIndex + 1) + DASHES + "\n" +
-    page + 
-    DASHES + DASHES + DASHES + "\n";
+    return this->dashesForStringViewer + STRINGVIEWMODE + this->dashesForStringViewer + "\n\n" + 
+    this->dashesForPage + PAGE + ParseFromInt(pageIndex + 1) + this->dashesForPage + "\n\n" +
+    page + "\n" +
+    this->dashesForPageEnd + "\n";
 }
 
 String StringViewer::GetPage(unsigned pageIndex)
 {
-    String page = "";
+    String page = this->pageBeginning + "\n";
     //Find the indecies of the first and last line on the page
     unsigned firstLineIndex = pageIndex * this->linesPerPage;
     unsigned lastLineIndex = (pageIndex + 1) * this->linesPerPage - 1;
