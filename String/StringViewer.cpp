@@ -8,10 +8,10 @@ const String PAGE = "Page ";
 
 const String COMMAND_WINDOW = "Command: ";
 
-const String HELP_MESSAGE = "This is the string view mode. It's used to easily view big strings. "
-"It splits the string to pages, with no more than n lines per page. "
-"You can navigate between pages using the commands \"nextpage\", that goes to the next page, "
-"\"prevpage\", that goes to the previous page, \"goto <page number>\" that goes to a specific page "
+const String HELP_MESSAGE = "This is the string view mode. It's used to easily view big strings.\n"
+"It splits the string to pages of a given size.\n"
+"You can navigate between pages using the commands:\n\"nextpage\", that goes to the next page,\n"
+"\"prevpage\", that goes to the previous page,\n\"goto <page number>\" that goes to a specific page\n"
 "and you can exit the string view mode with the \"exit\" command. ";
 
 const String NOTVALIDCOMMAND_MESSAGE = "Not a valid command. Type \"help\" if you don't know what to do, "

@@ -19,15 +19,16 @@ class StringViewer
     //The total number of pages needed
     unsigned pagesCount;
 
+    //A string that is displayed in the beginning of every page
+    String pageBeginning;
+
     //The max number of characters of a line on a page
     unsigned maxPageWidth;
 
-    //Formatting stuff
+    //Dashes for string formatting
     String dashesForStringViewer;
     String dashesForPage;
     String dashesForPageEnd;
-    
-    String pageBeginning;
 
     //The current screen
     String currentScreen;

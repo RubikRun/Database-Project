@@ -6,9 +6,11 @@
 
 typedef Vector<String> Row;
 
-const unsigned INVALID_COLUMN = 0xffffffff;
+const unsigned UNSIGNED_MAX = 0xffffffff;
+const unsigned INVALID_COLUMN = UNSIGNED_MAX;
 const unsigned CELL_WIDTH = 20;
 const char CELL_FILL_CHAR = ' ';
+const char CELL_OFFSET_MIN = 2;
 
 class Table
 {
@@ -49,11 +51,15 @@ class Table
         //Writes the table to a file
         void WriteToFile(String filename);
 
+        //For each column finds the minimum width so that the given rows can be displayed,
+        //without cells touching or overlapping
+        Vector<unsigned> GetColWidths(Vector<unsigned> rowIndecies);
+
         //Creates a nicely formatted string for each column's name
-        String GetColsString();
+        String GetColsString(Vector<unsigned> colWidths = Vector<unsigned>());
 
         //Creates a nicely formatted string for the requested row, and returns it
-        String GetRowString(unsigned row);
+        String GetRowString(unsigned row, Vector<unsigned> colWidths = Vector<unsigned>());
 
         //Returns the indecies of all rows that have a given value in a given column
         //If no column specified, returns all rows' indecies

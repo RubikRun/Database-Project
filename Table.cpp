@@ -190,32 +190,58 @@ void Table::WriteToFile(String filename)
     }
 }
 
-//Fills whats left of the last cell, so that it's exactly the width needed
-void FillCell(String& str)
+Vector<unsigned> Table::GetColWidths(Vector<unsigned> rowIndecies)
 {
-    if (str.GetLength() % CELL_WIDTH != 0)
+    Vector<unsigned> colWidths(this->colsCount + 1, 0);
+
+    //First column will contain row numbers, so it needs to be as wide as to contain the largest row number
+    colWidths[0] = ParseFromInt(this->rowsCount + 1).GetLength() + CELL_OFFSET_MIN;
+    //For each table column we will go through the rows we need and find the longest value (+ the column name)
+    for (int i = 0; i < this->colsCount; i++)
     {
-        unsigned charsLeft = CELL_WIDTH - str.GetLength() % CELL_WIDTH;
-        str += String(CELL_FILL_CHAR, charsLeft);
+        colWidths[i + 1] = this->colNames[i].GetLength() + CELL_OFFSET_MIN;
+        for (int j = 0; j < rowIndecies.GetLength(); j++)
+        {
+            unsigned currRowIndex = rowIndecies[j];
+            String currValue = this->rows[currRowIndex][i];
+            unsigned currValueLen = currValue.GetLength();
+
+            if (currValueLen + CELL_OFFSET_MIN > colWidths[i + 1])
+            {
+                colWidths[i + 1] = currValueLen + CELL_OFFSET_MIN;
+            }
+        }
     }
+
+    return colWidths;
 }
 
-String Table::GetColsString()
+String Table::GetColsString(Vector<unsigned> colWidths)
 {
+    //If cells' widths are not specified, every cell will be with a constant width
+    if (colWidths.IsEmpty())
+    {
+        colWidths = Vector<unsigned>(this->colsCount + 1, CELL_WIDTH);
+    }
+
     //Put an empty cell in the beginning, for the column of row numbers
-    String colsString = String(CELL_FILL_CHAR, CELL_WIDTH);
+    String colsString = String(CELL_FILL_CHAR, colWidths[0]);
 
     //Put columns' names
     for (int i = 0; i < this->colsCount; i++)
     {
-        colsString += this->colNames[i];
-        FillCell(colsString);
+        //Put current column's name
+        String currColName = this->colNames[i];
+        colsString += currColName;
+        //Fill the remaining cell
+        unsigned charsLeft = colWidths[i + 1] - currColName.GetLength();
+        colsString += String(CELL_FILL_CHAR, charsLeft);
     }
 
     return colsString;
 }
 
-String Table::GetRowString(unsigned row)
+String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
 {
     //Check if the requested row is valid
     if (row >= this->rowsCount)
@@ -223,15 +249,27 @@ String Table::GetRowString(unsigned row)
         return String();
     }
 
+    //If cells' widths are not specified, every cell will be with a constant width
+    if (colWidths.IsEmpty())
+    {
+        colWidths = Vector<unsigned>(CELL_WIDTH, this->colsCount + 1);
+    }
+
     //Put the row's number first
     String rowString = ParseFromInt(row + 1);
-    FillCell(rowString);
+    //Fill the remaining cell
+    unsigned charsLeft = colWidths[0] - rowString.GetLength();
+    rowString += String(CELL_FILL_CHAR, charsLeft);
 
     //Put the value of each column
     for (int i = 0; i < this->colsCount; i++)
     {
-        rowString += this->rows[row][i];
-        FillCell(rowString);
+        //Put current column's value
+        String currValue = this->rows[row][i];
+        rowString += currValue;
+        //Fill the remaining cell
+        charsLeft = colWidths[i + 1] - currValue.GetLength();
+        rowString += String(CELL_FILL_CHAR, charsLeft);
     }
 
     return rowString;
@@ -264,12 +302,15 @@ void Table::SelectAndView(unsigned searchCol, String searchValue)
     //Find the rows
     Vector<unsigned> rowIndecies = this->SelectIndecies(searchCol, searchValue);
 
+    //Find columns' widths
+    Vector<unsigned> colWidths = this->GetColWidths(rowIndecies);
+
     //Create a string of all the rows
     String rowsString = "";
     for (int i = 0; i < rowIndecies.GetLength(); i++)
     {
         unsigned currRowIndex = rowIndecies[i];
-        String currRowString = this->GetRowString(currRowIndex);
+        String currRowString = this->GetRowString(currRowIndex, colWidths);
         rowsString += currRowString;
 
         if (i < rowIndecies.GetLength() - 1)
@@ -279,7 +320,7 @@ void Table::SelectAndView(unsigned searchCol, String searchValue)
     }
 
     //View rows with a string viewer
-    String colsString = this->GetColsString() + "\n";
+    String colsString = this->GetColsString(colWidths) + "\n";
     StringViewer stringViewer(rowsString, colsString, 5);
     stringViewer.ViewMode();
 }
