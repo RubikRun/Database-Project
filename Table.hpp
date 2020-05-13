@@ -12,6 +12,7 @@ const unsigned CELL_WIDTH = 20;
 const char CELL_FILL_CHAR = ' ';
 const char CELL_OFFSET_MIN = 2;
 const char FILE_SEPARATOR = ',';
+const String NOVALUE = "NULL";
 
 class Table
 {

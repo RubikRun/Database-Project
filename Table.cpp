@@ -266,6 +266,10 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     {
         //Put current column's value
         String currValue = this->rows[row][i];
+        if (currValue == "")
+        {
+            currValue = NOVALUE;
+        }
         rowString += currValue;
         //Fill the remaining cell
         charsLeft = colWidths[i + 1] - currValue.GetLength();
