@@ -12,7 +12,8 @@ const unsigned CELL_WIDTH = 20;
 const char CELL_FILL_CHAR = ' ';
 const char CELL_OFFSET_MIN = 2;
 const char FILE_SEPARATOR = ',';
-const String NOVALUE = "NULL";
+const String NOVALUE_EXTERNAL = "NULL";
+const String NOVALUE_INTERNAL = "";
 
 class Table
 {
@@ -50,6 +51,9 @@ class Table
         //Find all rows that have a given value in a given column
         //and view them with a string viewer
         void SelectAndView(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
+
+        //Adds a new column with a given name and type to the table
+        void AddColumn(const String& colName, ValueType colType);
 
     private:
 

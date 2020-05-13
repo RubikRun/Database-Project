@@ -266,9 +266,9 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     {
         //Put current column's value
         String currValue = this->rows[row][i];
-        if (currValue == "")
+        if (currValue == NOVALUE_INTERNAL)
         {
-            currValue = NOVALUE;
+            currValue = NOVALUE_EXTERNAL;
         }
         rowString += currValue;
         //Fill the remaining cell
@@ -327,4 +327,19 @@ void Table::SelectAndView(unsigned searchCol, String searchValue)
     String colsString = this->GetColsString(colWidths) + "\n";
     StringViewer stringViewer(rowsString, colsString, 5);
     stringViewer.ViewMode();
+}
+
+void Table::AddColumn(const String& colName, ValueType colType)
+{
+    //Increase the number of columns in the table
+    this->colsCount++;
+    //Add the new column's name and type to the columns' names and types
+    this->colNames.Add(colName);
+    this->colTypes.Add(colType);
+    //Each row will have no value in the new column,
+    //so we need to add one more value - no value - to each row
+    for (int i = 0; i < this->rowsCount; i++)
+    {
+        this->rows[i].Add(NOVALUE_INTERNAL);
+    }
 }
