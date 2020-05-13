@@ -97,7 +97,7 @@ static void ReadRows(Vector<Row>& rows, unsigned rowsCount, unsigned colsCount, 
     }
 }
 
-Table ReadTable(std::istream& stream, const char separator)
+Table Table::ReadTable(std::istream& stream, const char separator)
 {
     //Read table's name
     String name;
@@ -122,7 +122,7 @@ Table ReadTable(std::istream& stream, const char separator)
     return table;
 }
 
-Table ReadTableFromFile(String filename)
+Table Table::ReadTableFromFile(String filename)
 {
     //Open file
     std::ifstream file(filename.GetCharArray());
@@ -132,7 +132,7 @@ Table ReadTableFromFile(String filename)
     }
 
     //Read table from file
-    Table table = ReadTable(file, FILE_SEPARATOR);
+    Table table = Table::ReadTable(file, FILE_SEPARATOR);
 
     //Set table's filename
     table.filename = filename;

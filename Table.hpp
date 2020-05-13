@@ -40,17 +40,23 @@ class Table
         //Prints all info about the table (testing only)
         void PrintAll();
 
-        //Reads a table from a stream and returns it
-        friend Table ReadTable(std::istream& stream, const char separator);
-
         //Reads a table from a file and returns it
-        friend Table ReadTableFromFile(String filename);
-
-        //Writes the table to a stream
-        void Write(std::ostream& stream, const char separator);
+        static Table ReadTableFromFile(String filename);
 
         //Writes the table to a file
         void WriteToFile(String filename);
+
+        //Find all rows that have a given value in a given column
+        //and view them with a string viewer
+        void SelectAndView(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
+
+    private:
+
+        //Reads a table from a stream and returns it
+        static Table ReadTable(std::istream& stream, const char separator);
+
+        //Writes the table to a stream
+        void Write(std::ostream& stream, const char separator);
 
         //For each column finds the minimum width so that the given rows can be displayed,
         //without cells touching or overlapping
@@ -65,12 +71,4 @@ class Table
         //Returns the indecies of all rows that have a given value in a given column
         //If no column specified, returns all rows' indecies
         Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
-
-        //Find all rows that have a given value in a given column
-        //and view them with a string viewer
-        void SelectAndView(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
 };
-
-Table ReadTable(std::istream& stream);
-
-Table ReadTableFromFile(String filename);
