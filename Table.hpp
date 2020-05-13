@@ -59,8 +59,13 @@ class Table
         //Finds all the rows that have the search value in the search column,
         //and updates their target column to have the the target value
         //if no target value specified, it will delete the values in the column
+        //if search column is invalid, it will update all rows
         void UpdateRows(unsigned searchCol, const String& searchValue,
             unsigned targetCol, const String& targetValue = NOVALUE_INTERNAL);
+
+        //Finds all the rows that have the search value in the search column, and deletes them.
+        //If search column is invalid, it will delete all rows
+        void DeleteRows(unsigned searchCol, const String& searchValue);
 
     private:
 
@@ -80,7 +85,9 @@ class Table
         //Creates a nicely formatted string for the requested row, and returns it
         String GetRowString(unsigned row, Vector<unsigned> colWidths = Vector<unsigned>());
 
-        //Returns the indecies of all rows that have a given value in a given column
-        //If no column specified, returns all rows' indecies
-        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, const String& searchValue = "");
+        //Finds all the rows that have the search value in the search column, and returns their indecies
+        //If no column specified or column is invalid, returns all rows' indecies
+        //We can specify complement = true, if we want to find the rows that DON'T have the search value
+        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, const String& searchValue = "", 
+            bool complement = false);
 };

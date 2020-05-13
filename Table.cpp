@@ -279,7 +279,7 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     return rowString;
 }
 
-Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchValue)
+Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchValue, bool complement)
 {
     //Check is the given column is valid
     if (searchCol >= this->colsCount)
@@ -292,7 +292,8 @@ Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchV
     Vector<unsigned> foundRows;
     for (int i = 0; i < this->rowsCount; i++)
     {
-        if (searchCol == INVALID_COLUMN || this->rows[i][searchCol] == searchValue)
+        if (searchCol == INVALID_COLUMN ||
+        (this->rows[i][searchCol] == searchValue) != complement )
         {
             foundRows.Add(i);
         }
@@ -363,4 +364,28 @@ void Table::UpdateRows(unsigned searchCol, const String& searchValue,
         unsigned rowIndex = foundRows[i];
         this->rows[rowIndex][targetCol] = targetValue;
     }
+}
+
+void Table::DeleteRows(unsigned searchCol, const String& searchValue)
+{
+    //Find the rows that don't have the search value in the search value,
+    //so the rows that we want to keep. ALl other rows should be deleted
+    Vector<unsigned> foundRows = this->SelectIndecies(searchCol, searchValue, true);
+    if (foundRows.GetLength() == 0)
+    {
+        return;
+    }
+
+    //Find the rows that we want to keep
+    Vector<Row> rowsAfterDelete = Vector<Row>(foundRows.GetLength(), Row());
+    for (int i = 0; i < foundRows.GetLength(); i++)
+    {
+        unsigned rowIndex = foundRows[i];
+        Row currRow = this->rows[rowIndex];
+        rowsAfterDelete[i] = (currRow);
+    }
+
+    //Set the table's rows to be the rows that we want to keep
+    this->rows = rowsAfterDelete;
+    this->rowsCount = this->rows.GetLength();
 }
