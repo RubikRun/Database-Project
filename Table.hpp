@@ -12,8 +12,9 @@ const unsigned CELL_WIDTH = 20;
 const char CELL_FILL_CHAR = ' ';
 const char CELL_OFFSET_MIN = 2;
 const char FILE_SEPARATOR = ',';
-const String NOVALUE_EXTERNAL = "NULL";
+const String NOVALUE_EXTERNAL = "None";
 const String NOVALUE_INTERNAL = "";
+const unsigned VIEWMODE_LINESPERPAGE = 15;
 
 class Table
 {
@@ -37,7 +38,7 @@ class Table
 
         //Creates a table with a given name, filename, names and types of columns, and rows
         Table(const String& name, const String& filename,
-        const Vector<String>& colNames, const Vector<ValueType>& colTypes, const Vector<Row>& rows);
+            const Vector<String>& colNames, const Vector<ValueType>& colTypes, const Vector<Row>& rows);
 
         //Prints all info about the table (testing only)
         void PrintAll();
@@ -54,6 +55,12 @@ class Table
 
         //Adds a new column with a given name and type to the table
         void AddColumn(const String& colName, ValueType colType);
+
+        //Finds all the rows that have the search value in the search column,
+        //and updates their target column to have the the target value
+        //if no target value specified, it will delete the values in the column
+        void UpdateRows(unsigned searchCol, const String& searchValue,
+            unsigned targetCol, const String& targetValue = NOVALUE_INTERNAL);
 
     private:
 
@@ -75,5 +82,5 @@ class Table
 
         //Returns the indecies of all rows that have a given value in a given column
         //If no column specified, returns all rows' indecies
-        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
+        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, const String& searchValue = "");
 };

@@ -58,7 +58,7 @@ void Table::PrintAll()
 
 //Reads columns' names and types from a stream
 static void ReadColsInfo(Vector<String>& colNames, Vector<ValueType>& colTypes,
-unsigned colsCount, std::istream& stream, const char separator)
+    unsigned colsCount, std::istream& stream, const char separator)
 {
     //We know the number of names and types beforehand,
     //so we can create the two vectors and then read to them
@@ -252,7 +252,7 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     //If cells' widths are not specified, every cell will be with a constant width
     if (colWidths.IsEmpty())
     {
-        colWidths = Vector<unsigned>(CELL_WIDTH, this->colsCount + 1);
+        colWidths = Vector<unsigned>(this->colsCount + 1, CELL_WIDTH);
     }
 
     //Put the row's number first
@@ -279,7 +279,7 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     return rowString;
 }
 
-Vector<unsigned> Table::SelectIndecies(unsigned searchCol, String searchValue)
+Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchValue)
 {
     //Check is the given column is valid
     if (searchCol >= this->colsCount)
@@ -325,7 +325,7 @@ void Table::SelectAndView(unsigned searchCol, String searchValue)
 
     //View rows with a string viewer
     String colsString = this->GetColsString(colWidths) + "\n";
-    StringViewer stringViewer(rowsString, colsString, 5);
+    StringViewer stringViewer(rowsString, colsString, VIEWMODE_LINESPERPAGE);
     stringViewer.ViewMode();
 }
 
@@ -341,5 +341,26 @@ void Table::AddColumn(const String& colName, ValueType colType)
     for (int i = 0; i < this->rowsCount; i++)
     {
         this->rows[i].Add(NOVALUE_INTERNAL);
+    }
+}
+
+void Table::UpdateRows(unsigned searchCol, const String& searchValue,
+        unsigned targetCol, const String& targetValue)
+{
+    //Check if target column is valid
+    if (targetCol >= this->colsCount)
+    {
+        std::cerr << "Error: Not a valid target column. The table has columns from 1 to " << this->colsCount << std::endl;
+        return;
+    }
+
+    //Find the rows with the search value in the search column
+    Vector<unsigned> foundRows = this->SelectIndecies(searchCol, searchValue);
+
+    //Update rows' target columns
+    for (int i = 0; i < foundRows.GetLength(); i++)
+    {
+        unsigned rowIndex = foundRows[i];
+        this->rows[rowIndex][targetCol] = targetValue;
     }
 }
