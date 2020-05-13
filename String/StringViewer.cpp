@@ -156,7 +156,7 @@ void StringViewer::GoTo(unsigned requestPage)
     if (requestPage >= this->pagesCount)
     {
         this->currentScreen = this->GetPageWindow(this->currentPage) + "\n"
-        "Error: Not a valid page number. Pages are from 1 to " + ParseFromInt(this->pagesCount) + ".\n";
+        "Error: Not a valid page number. Pages are from 1 to " + String::ParseFromInt(this->pagesCount) + ".\n";
     }
     else
     {
@@ -176,7 +176,7 @@ String StringViewer::GetPageWindow(unsigned pageIndex)
     String page = this->GetPage(pageIndex);
 
     return this->dashesForStringViewer + STRINGVIEWMODE + this->dashesForStringViewer + "\n\n" + 
-    this->dashesForPage + PAGE + ParseFromInt(pageIndex + 1) + this->dashesForPage + "\n\n" +
+    this->dashesForPage + PAGE + String::ParseFromInt(pageIndex + 1) + this->dashesForPage + "\n\n" +
     page + "\n" +
     this->dashesForPageEnd + "\n";
 }

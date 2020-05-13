@@ -73,17 +73,18 @@ class String
         //Parses the string to an int
         int ParseToInt() const;
 
-        //Reads an int from the stream
-        friend int ReadInt(std::istream& stream);
-
         //Parses an int to a string
-        friend String ParseFromInt(int n);
+        static String ParseFromInt(int n);
+
+        //Reads string from the stream until it reaches the separator,
+        //parses it to int and returns it
+        static int ReadInt(std::istream& stream, char separator = ' ');
 
         //Parses the string to a double
         double ParseToDouble() const;
 
         //Parses a double to a string
-        friend String ParseFromDouble(double d);
+        static String ParseFromDouble(double d);
 
         //Extracts a substring specified with a begin index and a length
         String GetSubstring(unsigned begin, unsigned length) const;
@@ -112,9 +113,3 @@ String operator+(const char* charArray, const String& another);
 std::istream& operator>>(std::istream& stream, String& string);
 
 std::ostream& operator<<(std::ostream& stream, String string);
-
-String ParseFromInt(int n);
-
-int ReadInt(std::istream& stream = std::cin);
-
-String ParseFromDouble(double d);

@@ -400,7 +400,7 @@ int String::ParseToInt() const
     return negative ? (-result) : result;
 }
 
-String ParseFromInt(int n)
+String String::ParseFromInt(int n)
 {
     //If the number is negative, we'll parse it as positive and then flip the sign
     bool negative = (n < 0);
@@ -432,12 +432,11 @@ String ParseFromInt(int n)
     return string;
 }
 
-int ReadInt(std::istream& stream)
+int String::ReadInt(std::istream& stream, char separator)
 {
-    //Read the number as a string
     String string;
-    string.ReadNext(stream, ' ', true);
-    //Parse it to int
+    string.ReadNext(stream, separator);
+
     int result = string.ParseToInt();
 
     return result;
@@ -482,7 +481,7 @@ double String::ParseToDouble() const
     }
 }
 
-String ParseFromDouble(double d)
+String String::ParseFromDouble(double d)
 {
     //If the number is negative,
     //we'll parse it as positive and then flip the sign
@@ -509,11 +508,11 @@ String ParseFromDouble(double d)
     String string;
     if (decimalPart == 0)
     {
-        string = sign + ParseFromInt(wholePart);
+        string = sign + String::ParseFromInt(wholePart);
     }
     else
     {
-        string = sign + ParseFromInt(wholePart) + "." + ParseFromInt(decimalPart);
+        string = sign + String::ParseFromInt(wholePart) + "." + String::ParseFromInt(decimalPart);
     }
 
     return string;

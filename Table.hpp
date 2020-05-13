@@ -11,6 +11,7 @@ const unsigned INVALID_COLUMN = UNSIGNED_MAX;
 const unsigned CELL_WIDTH = 20;
 const char CELL_FILL_CHAR = ' ';
 const char CELL_OFFSET_MIN = 2;
+const char FILE_SEPARATOR = ',';
 
 class Table
 {
@@ -40,13 +41,13 @@ class Table
         void PrintAll();
 
         //Reads a table from a stream and returns it
-        friend Table ReadTable(std::istream& stream);
+        friend Table ReadTable(std::istream& stream, const char separator);
 
         //Reads a table from a file and returns it
         friend Table ReadTableFromFile(String filename);
 
         //Writes the table to a stream
-        void Write(std::ostream& stream);
+        void Write(std::ostream& stream, const char separator);
 
         //Writes the table to a file
         void WriteToFile(String filename);

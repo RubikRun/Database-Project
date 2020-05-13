@@ -57,8 +57,8 @@ void Table::PrintAll()
 }
 
 //Reads columns' names and types from a stream
-void ReadColsInfo(Vector<String>& colNames, Vector<ValueType>& colTypes,
-unsigned colsCount, std::istream& stream)
+static void ReadColsInfo(Vector<String>& colNames, Vector<ValueType>& colTypes,
+unsigned colsCount, std::istream& stream, const char separator)
 {
     //We know the number of names and types beforehand,
     //so we can create the two vectors and then read to them
@@ -68,15 +68,15 @@ unsigned colsCount, std::istream& stream)
     //Read names and types
     for (int i = 0; i < colsCount; i++)
     {
-        colNames[i].ReadWord(stream);
+        colNames[i].ReadNext(stream, separator);
 
-        int typeIndex = ReadInt(stream);
+        int typeIndex = String::ReadInt(stream, separator);
         colTypes[i] = (ValueType)typeIndex;
     }
 }
 
 //Reads rows from a stream
-void ReadRows(Vector<Row>& rows, unsigned rowsCount, unsigned colsCount, std::istream& stream)
+static void ReadRows(Vector<Row>& rows, unsigned rowsCount, unsigned colsCount, std::istream& stream, const char separator)
 {
     //We know the number of rows and columns beforehand,
     //so we can create the vector of rows, and for each row create the vector of cols,
@@ -92,29 +92,29 @@ void ReadRows(Vector<Row>& rows, unsigned rowsCount, unsigned colsCount, std::is
     {
         for (int j = 0; j < colsCount; j++)
         {
-            rows[i][j].ReadWord(stream);
+            rows[i][j].ReadNext(stream, separator);
         }
     }
 }
 
-Table ReadTable(std::istream& stream)
+Table ReadTable(std::istream& stream, const char separator)
 {
     //Read table's name
     String name;
-    name.ReadWord(stream);
+    name.ReadNext(stream, FILE_SEPARATOR);
 
     //Read number of rows and columns of the table
-    unsigned rowsCount = ReadInt(stream);
-    unsigned colsCount = ReadInt(stream);
+    unsigned rowsCount = String::ReadInt(stream, FILE_SEPARATOR);
+    unsigned colsCount = String::ReadInt(stream, FILE_SEPARATOR);
 
     //Read columns' names and types
     Vector<String> colNames;
     Vector<ValueType> colTypes;
-    ReadColsInfo(colNames, colTypes, colsCount, stream);
+    ReadColsInfo(colNames, colTypes, colsCount, stream, FILE_SEPARATOR);
 
     //Read rows
     Vector<Row> rows;
-    ReadRows(rows, rowsCount, colsCount, stream);
+    ReadRows(rows, rowsCount, colsCount, stream, FILE_SEPARATOR);
 
     //Create a table with the data that we read
     Table table(name, "", colNames, colTypes, rows);
@@ -132,7 +132,7 @@ Table ReadTableFromFile(String filename)
     }
 
     //Read table from file
-    Table table = ReadTable(file);
+    Table table = ReadTable(file, FILE_SEPARATOR);
 
     //Set table's filename
     table.filename = filename;
@@ -147,17 +147,17 @@ Table ReadTableFromFile(String filename)
     return table;
 }
 
-void Table::Write(std::ostream& stream)
+void Table::Write(std::ostream& stream, const char separator)
 {
     //Write table's name
-    stream << this->name << " ";
+    stream << this->name << separator;
     //Write the number of rows and columns
-    stream << this->rowsCount << " " << this->colsCount << " ";
+    stream << this->rowsCount << separator << this->colsCount << separator;
 
     //Write names and types of columns
     for (int i = 0; i < this->colsCount; i++)
     {
-        stream << this->colNames[i] << " " << this->colTypes[i] << " ";
+        stream << this->colNames[i] << separator << this->colTypes[i] << separator;
     }
 
     //Write rows
@@ -165,7 +165,7 @@ void Table::Write(std::ostream& stream)
     {
         for (int j = 0; j < this->colsCount; j++)
         {
-            stream << this->rows[i][j] << " ";
+            stream << this->rows[i][j] << separator;
         }
     }
 }
@@ -180,7 +180,7 @@ void Table::WriteToFile(String filename)
     }
 
     //Write table to file
-    this->Write(file);
+    this->Write(file, FILE_SEPARATOR);
 
     //Close file
     file.close();
@@ -195,7 +195,7 @@ Vector<unsigned> Table::GetColWidths(Vector<unsigned> rowIndecies)
     Vector<unsigned> colWidths(this->colsCount + 1, 0);
 
     //First column will contain row numbers, so it needs to be as wide as to contain the largest row number
-    colWidths[0] = ParseFromInt(this->rowsCount + 1).GetLength() + CELL_OFFSET_MIN;
+    colWidths[0] = String::ParseFromInt(this->rowsCount + 1).GetLength() + CELL_OFFSET_MIN;
     //For each table column we will go through the rows we need and find the longest value (+ the column name)
     for (int i = 0; i < this->colsCount; i++)
     {
@@ -256,7 +256,7 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     }
 
     //Put the row's number first
-    String rowString = ParseFromInt(row + 1);
+    String rowString = String::ParseFromInt(row + 1);
     //Fill the remaining cell
     unsigned charsLeft = colWidths[0] - rowString.GetLength();
     rowString += String(CELL_FILL_CHAR, charsLeft);
