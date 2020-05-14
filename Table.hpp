@@ -33,8 +33,8 @@ class Table
 
     public:
 
-        //Creates an empty table with a given name and filename
-        Table(const String& name, const String& filename);
+        //Creates an empty table with a given name
+        Table(const String& name);
 
         //Creates a table with a given name, filename, names and types of columns, and rows
         Table(const String& name, const String& filename,
@@ -66,6 +66,10 @@ class Table
         //Finds all the rows that have the search value in the search column, and deletes them.
         //If search column is invalid, it will delete all rows
         void DeleteRows(unsigned searchCol, const String& searchValue);
+
+        //Adds a new row with the given values to the table
+        //If some values are not specified, they will be set to novalue
+        void AddRow(const Row& row = Row());
 
     private:
 

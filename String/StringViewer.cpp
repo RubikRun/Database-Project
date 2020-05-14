@@ -29,7 +29,7 @@ const String TESTSTRING = "alabala\nhmm\ni ko sq\nnqkvi redove tuka\noshte edin\
 "oshteee\nalabala\noctopus\nmi e lubimiq\nalbum\nno lubimata mi\npesen\nne e ot nego\n"
 "a e lateralus\nna tool\nbasi qkata pesen\naide stiga";
 
-StringViewer::StringViewer(const String& string, const String& pageBeginning, unsigned linesPerPage)
+StringViewer::StringViewer(const String& string, unsigned linesPerPage, const String& pageBeginning)
 {
     this->string = string;
     this->pageBeginning = pageBeginning;
@@ -50,8 +50,22 @@ StringViewer::StringViewer(const String& string, const String& pageBeginning, un
     }
 
     //Find the dashes for string formatting
-    this->dashesForStringViewer = String('-', (this->maxPageWidth - STRINGVIEWMODE.GetLength()) / 2);
-    this->dashesForPage = String('-', (this->maxPageWidth - PAGE.GetLength()) / 2);
+    if (this->maxPageWidth > STRINGVIEWMODE.GetLength())
+    {
+        this->dashesForStringViewer = String('-', (this->maxPageWidth - STRINGVIEWMODE.GetLength()) / 2);
+    }
+    else
+    {
+        this->dashesForStringViewer = "";
+    }
+    if (this->maxPageWidth > PAGE.GetLength())
+    {
+        this->dashesForPage = String('-', (this->maxPageWidth - PAGE.GetLength()) / 2);
+    }
+    else
+    {
+        this->dashesForPage = "";
+    }
     this->dashesForPageEnd = String('-', this->maxPageWidth);
 
     //We begin the view mode on page 1

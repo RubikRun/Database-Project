@@ -4,10 +4,9 @@
 #include <fstream>
 #include <iomanip>
 
-Table::Table(const String& name, const String& filename)
+Table::Table(const String& name)
 {
     this->name = name;
-    this->filename = filename;
 
     this->rowsCount = this->colsCount = 0;
 }
@@ -326,7 +325,7 @@ void Table::SelectAndView(unsigned searchCol, String searchValue)
 
     //View rows with a string viewer
     String colsString = this->GetColsString(colWidths) + "\n";
-    StringViewer stringViewer(rowsString, colsString, VIEWMODE_LINESPERPAGE);
+    StringViewer stringViewer(rowsString, VIEWMODE_LINESPERPAGE, colsString);
     stringViewer.ViewMode();
 }
 
@@ -388,4 +387,28 @@ void Table::DeleteRows(unsigned searchCol, const String& searchValue)
     //Set the table's rows to be the rows that we want to keep
     this->rows = rowsAfterDelete;
     this->rowsCount = this->rows.GetLength();
+}
+
+void Table::AddRow(const Row& rowValues)
+{
+    //Create a new row with the needed length
+    Row newRow = Row(this->colsCount, NOVALUE_INTERNAL);
+    //Fill the new row with the values given
+    for (int i = 0; i < this->colsCount; i++)
+    {
+        //If we have no values left, stop filling
+        if (i >= rowValues.GetLength())
+        {
+            break;
+        }
+        //Don't allow null strings. A null string will be novalue
+        if (!rowValues[i].IsNull())
+        {
+            newRow[i] = rowValues[i];
+        }
+    }
+
+    //Add the new row to table's rows
+    this->rows.Add(newRow);
+    this->rowsCount++;
 }

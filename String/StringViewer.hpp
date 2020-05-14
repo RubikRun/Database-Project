@@ -36,7 +36,7 @@ class StringViewer
     public:
 
         //Creates a string viewer for the given string with the specified number of lines per page
-        StringViewer(const String& string, const String& pageBeginning = "", unsigned linesPerPage = 10);
+        StringViewer(const String& string, unsigned linesPerPage = 10, const String& pageBeginning = "");
 
         //Enters view mode
         void ViewMode();
