@@ -46,6 +46,9 @@ class Table
         //Returns the name of the table
         const String& GetName();
 
+        //Sets the name of the table
+        void SetName(const String& name);
+
         //Prints all info about the table (testing only)
         void PrintAll();
 
@@ -83,6 +86,14 @@ class Table
         //Creates a new table from those row pairs and returns it
         static Table InnerJoin(const Table& table1, unsigned column1, const Table& table2, unsigned column2);
 
+        //Counts the number of rows in the table that have the search value in the search column
+        unsigned CountRows(unsigned searchColumn = INVALID_COLUMN, const String& searchValue = NOVALUE_INTERNAL) const;
+
+        //Applies the operation to the values of target column of all the rows that have the search value in the search column
+        //Returns the result
+        double Aggregate(unsigned targetColumn, AggregateOperation operation,
+            unsigned searchColumn = INVALID_COLUMN, const String& searchValue = NOVALUE_INTERNAL) const;
+
     private:
 
         //Checks if the talbe is empty
@@ -107,6 +118,6 @@ class Table
         //Finds all the rows that have the search value in the search column, and returns their indecies
         //If no column specified or column is invalid, returns all rows' indecies
         //We can specify complement = true, if we want to find the rows that DON'T have the search value
-        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, const String& searchValue = "", 
+        Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, const String& searchValue = NOVALUE_INTERNAL, 
             bool complement = false) const;
 };

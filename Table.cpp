@@ -29,6 +29,11 @@ const String& Table::GetName()
     return this->name;
 }
 
+void Table::SetName(const String& name)
+{
+    this->name = name;
+}
+
 void Table::PrintAll()
 {
     std::cout << "Name: " << this->name << std::endl;
@@ -453,4 +458,57 @@ Table Table::InnerJoin(const Table& table1, unsigned column1, const Table& table
     }
 
     return join;
+}
+
+unsigned Table::CountRows(unsigned searchColumn, const String& searchValue) const
+{
+    return this->SelectIndecies(searchColumn, searchValue).GetLength();
+}
+
+double Table::Aggregate(unsigned targetCol, AggregateOperation operation,
+    unsigned searchCol, const String& searchValue) const
+{
+    //Target column should be valid and of numerical type
+    if (targetCol < this->colsCount &&
+        !(this->colTypes[targetCol] == Whole || this->colTypes[targetCol] == Decimal) )
+    {
+        return 0;
+    }
+
+    //Find the rows with the search value
+    Vector<unsigned> foundRows = this->SelectIndecies(searchCol, searchValue);
+
+    //If no rows found, return 0
+    if (foundRows.GetLength() == 0)
+    {
+        return 0;
+    }
+
+    double result;
+    //Find result's initial value depending on the operation type
+    double firstValue = this->rows[foundRows[0]][targetCol].ParseToDouble();
+    switch (operation)
+    {
+        case Sum: result = 0; break;
+        case Product: result = 1; break;
+        case Maximum: result = firstValue; break;
+        case Minimum: result = firstValue; break;
+        default: result = 0; break;
+    }
+    //Apply the operation on all the values in the target column of the found rows
+    for (int i = 0; i < foundRows.GetLength(); i++)
+    {
+        unsigned rowIndex = foundRows[i];
+        double numValue = this->rows[rowIndex][targetCol].ParseToDouble();
+        //Update the result depending on the operation type
+        switch (operation)
+        {
+            case Sum: result += numValue; break;
+            case Product: result *= numValue; break;
+            case Maximum: if (numValue > result) result = numValue; break;
+            case Minimum: if (numValue < result) result = numValue; break;
+        }
+    }
+
+    return result;
 }
