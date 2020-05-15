@@ -24,6 +24,11 @@ const Vector<String>& colNames, const Vector<ValueType>& colTypes, const Vector<
     this->colsCount = colNames.GetLength();
 }
 
+const String& Table::GetName()
+{
+    return this->name;
+}
+
 void Table::PrintAll()
 {
     std::cout << "Name: " << this->name << std::endl;
@@ -146,7 +151,7 @@ Table Table::ReadTableFromFile(String filename)
     return table;
 }
 
-void Table::Write(std::ostream& stream, const char separator)
+void Table::Write(std::ostream& stream, const char separator) const
 {
     //Write table's name
     stream << this->name << separator;
@@ -169,7 +174,7 @@ void Table::Write(std::ostream& stream, const char separator)
     }
 }
 
-void Table::WriteToFile(String filename)
+void Table::WriteToFile(String filename) const
 {
     //Open file
     std::ofstream file(filename.GetCharArray());
@@ -189,7 +194,7 @@ void Table::WriteToFile(String filename)
     }
 }
 
-Vector<unsigned> Table::GetColWidths(Vector<unsigned> rowIndecies)
+Vector<unsigned> Table::GetColWidths(Vector<unsigned> rowIndecies) const
 {
     Vector<unsigned> colWidths(this->colsCount + 1, 0);
 
@@ -215,7 +220,7 @@ Vector<unsigned> Table::GetColWidths(Vector<unsigned> rowIndecies)
     return colWidths;
 }
 
-String Table::GetColsString(Vector<unsigned> colWidths)
+String Table::GetColsString(Vector<unsigned> colWidths) const
 {
     //If cells' widths are not specified, every cell will be with a constant width
     if (colWidths.IsEmpty())
@@ -240,7 +245,7 @@ String Table::GetColsString(Vector<unsigned> colWidths)
     return colsString;
 }
 
-String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
+String Table::GetRowString(unsigned row, Vector<unsigned> colWidths) const
 {
     //Check if the requested row is valid
     if (row >= this->rowsCount)
@@ -278,7 +283,7 @@ String Table::GetRowString(unsigned row, Vector<unsigned> colWidths)
     return rowString;
 }
 
-Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchValue, bool complement)
+Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchValue, bool complement) const
 {
     //Check is the given column is valid
     if (searchCol >= this->colsCount)
@@ -301,7 +306,7 @@ Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchV
     return foundRows;
 }
 
-void Table::SelectAndView(unsigned searchCol, String searchValue)
+void Table::SelectAndView(unsigned searchCol, String searchValue) const
 {
     //Find the rows
     Vector<unsigned> rowIndecies = this->SelectIndecies(searchCol, searchValue);
@@ -411,4 +416,41 @@ void Table::AddRow(const Row& rowValues)
     //Add the new row to table's rows
     this->rows.Add(newRow);
     this->rowsCount++;
+}
+
+bool Table::IsEmpty() const
+{
+    return (this->rowsCount == 0);
+}
+
+Table Table::InnerJoin(const Table& table1, unsigned column1, const Table& table2, unsigned column2)
+{
+    String joinName = INNERJOIN_PREFIX + table1.name + TABLENAME_SEPARATOR + table2.name;
+
+    //If either one of the tables is empty, the join will be empty
+    if (table1.IsEmpty() || table2.IsEmpty())
+    {
+        return Table(joinName);
+    }
+
+    //Create the join empty
+    Table join = Table(joinName);
+    //Add column names and types to join
+    join.colNames = table1.colNames + table2.colNames;
+    join.colTypes = table1.colTypes + table2.colTypes;
+    join.colsCount = table1.colNames.GetLength() + table2.colNames.GetLength();
+    //Find the rows and add them to the join
+    for (int i = 0; i < table1.rowsCount; i++)
+    {
+        for (int j = 0; j < table2.rowsCount; j++)
+        {
+            if (table1.rows[i][column1] == table2.rows[j][column2])
+            {
+                Row joinRow = table1.rows[i] + table2.rows[j];
+                join.AddRow(joinRow);
+            }
+        }
+    }
+
+    return join;
 }

@@ -15,9 +15,12 @@ const char FILE_SEPARATOR = ',';
 const String NOVALUE_EXTERNAL = "None";
 const String NOVALUE_INTERNAL = "";
 const unsigned VIEWMODE_LINESPERPAGE = 15;
+const String INNERJOIN_PREFIX = "innerjoin_";
+const String TABLENAME_SEPARATOR = "_";
 
 class Table
 {
+    public:
     //The name of the table and the name of the file where it's stored
     String name, filename;
 
@@ -40,6 +43,9 @@ class Table
         Table(const String& name, const String& filename,
             const Vector<String>& colNames, const Vector<ValueType>& colTypes, const Vector<Row>& rows);
 
+        //Returns the name of the table
+        const String& GetName();
+
         //Prints all info about the table (testing only)
         void PrintAll();
 
@@ -47,11 +53,11 @@ class Table
         static Table ReadTableFromFile(String filename);
 
         //Writes the table to a file
-        void WriteToFile(String filename);
+        void WriteToFile(String filename) const;
 
         //Find all rows that have a given value in a given column
         //and view them with a string viewer
-        void SelectAndView(unsigned searchCol = INVALID_COLUMN, String searchValue = "");
+        void SelectAndView(unsigned searchCol = INVALID_COLUMN, String searchValue = "") const;
 
         //Adds a new column with a given name and type to the table
         void AddColumn(const String& colName, ValueType colType);
@@ -71,27 +77,36 @@ class Table
         //If some values are not specified, they will be set to novalue
         void AddRow(const Row& row = Row());
 
+        //Inner joins two tables.
+        //Finds each pair of rows (row1, row2), where row1 is from table1 and row2 is from table2,
+        //and row1 in column1 has the same value as row2 in column2.
+        //Creates a new table from those row pairs and returns it
+        static Table InnerJoin(const Table& table1, unsigned column1, const Table& table2, unsigned column2);
+
     private:
+
+        //Checks if the talbe is empty
+        bool IsEmpty() const;
 
         //Reads a table from a stream and returns it
         static Table ReadTable(std::istream& stream, const char separator);
 
         //Writes the table to a stream
-        void Write(std::ostream& stream, const char separator);
+        void Write(std::ostream& stream, const char separator) const;
 
         //For each column finds the minimum width so that the given rows can be displayed,
         //without cells touching or overlapping
-        Vector<unsigned> GetColWidths(Vector<unsigned> rowIndecies);
+        Vector<unsigned> GetColWidths(Vector<unsigned> rowIndecies) const;
 
         //Creates a nicely formatted string for each column's name
-        String GetColsString(Vector<unsigned> colWidths = Vector<unsigned>());
+        String GetColsString(Vector<unsigned> colWidths = Vector<unsigned>()) const;
 
         //Creates a nicely formatted string for the requested row, and returns it
-        String GetRowString(unsigned row, Vector<unsigned> colWidths = Vector<unsigned>());
+        String GetRowString(unsigned row, Vector<unsigned> colWidths = Vector<unsigned>()) const;
 
         //Finds all the rows that have the search value in the search column, and returns their indecies
         //If no column specified or column is invalid, returns all rows' indecies
         //We can specify complement = true, if we want to find the rows that DON'T have the search value
         Vector<unsigned> SelectIndecies(unsigned searchCol = INVALID_COLUMN, const String& searchValue = "", 
-            bool complement = false);
+            bool complement = false) const;
 };

@@ -149,16 +149,12 @@ String& String::operator=(const String& another)
 
 bool String::operator==(const String& another) const
 {
-    //If both strings are null, they are equal
-    if (this->IsNull() && another.IsNull())
-    {
-        return true;
-    }
-    //If only one of the strings is null, they are not equal
+    //If either one of the strings is null, they are not equal
     if (this->IsNull() || another.IsNull())
     {
         return false;
     }
+    
     //Otherwise compare their char arrays
     return (strcmp(this->charArray, another.charArray) == 0);
 }

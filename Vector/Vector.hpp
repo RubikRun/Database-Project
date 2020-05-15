@@ -24,6 +24,13 @@ class Vector
         //Assigns another vector to this vector
         Vector<T>& operator=(const Vector<T>& another);
 
+        //Returns a reference to the object at the given index
+        T& operator[](unsigned index) const;
+
+        //Concatenates this vector to another vector.
+        //Creates a new vector from the elemtns of this vector followed by the elements of the other vector
+        Vector<T> operator+(const Vector<T>& another) const;
+
         //Returns the length of the vector
         unsigned GetLength() const;
 
@@ -32,9 +39,6 @@ class Vector
 
         //Prints the elements of the vector to the screen
         void Print() const;
-
-        //Returns a reference to the object at the given index
-        T& operator[](unsigned index) const;
 
         //Adds an element to the vector
         void Add(T element);
@@ -126,6 +130,28 @@ Vector<T>& Vector<T>::operator=(const Vector<T>& another)
 }
 
 template <typename T>
+T& Vector<T>::operator[](unsigned index) const
+{
+    //Return the element at the given index
+    return this->array[index];
+}
+
+template <typename T>
+Vector<T> Vector<T>::operator+(const Vector<T>& another) const
+{
+    unsigned concatLength = this->length + another.length;
+    //Create a vector for the concatenation and assign the values of this vector
+    Vector<T> concat = *this;
+    //Add the values of the other vector to the concatenation
+    for (int i = 0; i < another.length; i++)
+    {
+        concat.Add(another[i]);
+    }
+
+    return concat;
+}
+
+template <typename T>
 unsigned Vector<T>::GetLength() const
 {
     //Return the length of the vector
@@ -152,13 +178,6 @@ void Vector<T>::Print() const
 {
     this->Write(std::cout, '\n');
     std::cout << "\n\n";
-}
-
-template <typename T>
-T& Vector<T>::operator[](unsigned index) const
-{
-    //Return the element at the given index
-    return this->array[index];
 }
 
 template <typename T>
