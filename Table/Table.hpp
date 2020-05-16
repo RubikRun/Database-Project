@@ -12,7 +12,7 @@ const unsigned CELL_WIDTH = 20;
 const char CELL_FILL_CHAR = ' ';
 const char CELL_OFFSET_MIN = 2;
 const char FILE_SEPARATOR = ',';
-const String NOVALUE_EXTERNAL = "None";
+const String NOVALUE_EXTERNAL = "NULL";
 const String NOVALUE_INTERNAL = "";
 const unsigned VIEWMODE_LINESPERPAGE = 15;
 const String INNERJOIN_PREFIX = "innerjoin_";
@@ -20,7 +20,6 @@ const String TABLENAME_SEPARATOR = "_";
 
 class Table
 {
-    public:
     //The name of the table and the name of the file where it's stored
     String name, filename;
 
