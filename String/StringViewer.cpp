@@ -84,7 +84,7 @@ void StringViewer::ViewMode()
     do
     {
         //Clear the screen
-        //system("cls");
+        system("cls");
         //Show the current screen + command window
         std::cout << this->currentScreen;
         std::cout << COMMAND_WINDOW;

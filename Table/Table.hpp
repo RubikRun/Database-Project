@@ -1,5 +1,5 @@
-#include "String/String.hpp"
-#include "Vector/Vector.hpp"
+#include "../String/String.hpp"
+#include "../Vector/Vector.hpp"
 #include "Enums.hpp"
 
 #include <iostream>

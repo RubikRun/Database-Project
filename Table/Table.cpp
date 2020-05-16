@@ -1,5 +1,5 @@
 #include "Table.hpp"
-#include "String/StringViewer.hpp"
+#include "../String/StringViewer.hpp"
 
 #include <fstream>
 #include <iomanip>
