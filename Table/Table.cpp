@@ -4,6 +4,21 @@
 #include <fstream>
 #include <iomanip>
 
+static const unsigned CELL_WIDTH = 20;
+static const char CELL_FILL_CHAR = ' ';
+static const char CELL_OFFSET_MIN = 2;
+static const String TABLEFILE_PREFIX = "DataFiles/";
+static const char TABLEFILE_SEPARATOR = ',';
+static const String NOVALUE_EXTERNAL = "NULL";
+static const unsigned VIEWMODE_LINESPERPAGE = 15;
+static const String INNERJOIN_PREFIX = "innerjoin_";
+static const String TABLENAME_SEPARATOR = "_";
+
+Table::Table()
+{
+    this->rowsCount = this->colsCount = 0;
+}
+
 Table::Table(const String& name)
 {
     this->name = name;
@@ -32,37 +47,6 @@ const String& Table::GetName()
 void Table::SetName(const String& name)
 {
     this->name = name;
-}
-
-void Table::PrintAll()
-{
-    std::cout << "Name: " << this->name << std::endl;
-    std::cout << "Filename: " << this->filename << std::endl;
-    std::cout << "Number of rows: " << this->rowsCount << std::endl;
-    std::cout << "Number of columns: " << this->colsCount << std::endl;
-    std::cout << std::endl;
-
-    std::cout << std::left << std::setw(CELL_WIDTH) << "";
-    for (int i = 0; i < colsCount; i++)
-    {
-         std::cout << std::left << std::setw(CELL_WIDTH) << this->colNames[i];
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < (colsCount + 1) * CELL_WIDTH; i++)
-    {
-        std::cout << "-";
-    }
-    std::cout << std::endl;
-
-    for (int i = 0; i < rowsCount; i++)
-    {
-        std::cout << std::left << std::setw(CELL_WIDTH) << i + 1;
-        for (int j = 0; j < colsCount; j++)
-        {
-             std::cout << std::left << std::setw(CELL_WIDTH) << this->rows[i][j];
-        }
-        std::cout << std::endl;
-    }
 }
 
 //Reads columns' names and types from a stream
@@ -110,20 +94,20 @@ Table Table::ReadTable(std::istream& stream, const char separator)
 {
     //Read table's name
     String name;
-    name.ReadNext(stream, FILE_SEPARATOR);
+    name.ReadNext(stream, TABLEFILE_SEPARATOR);
 
     //Read number of rows and columns of the table
-    unsigned rowsCount = String::ReadInt(stream, FILE_SEPARATOR);
-    unsigned colsCount = String::ReadInt(stream, FILE_SEPARATOR);
+    unsigned rowsCount = String::ReadInt(stream, TABLEFILE_SEPARATOR);
+    unsigned colsCount = String::ReadInt(stream, TABLEFILE_SEPARATOR);
 
     //Read columns' names and types
     Vector<String> colNames;
     Vector<ValueType> colTypes;
-    ReadColsInfo(colNames, colTypes, colsCount, stream, FILE_SEPARATOR);
+    ReadColsInfo(colNames, colTypes, colsCount, stream, TABLEFILE_SEPARATOR);
 
     //Read rows
     Vector<Row> rows;
-    ReadRows(rows, rowsCount, colsCount, stream, FILE_SEPARATOR);
+    ReadRows(rows, rowsCount, colsCount, stream, TABLEFILE_SEPARATOR);
 
     //Create a table with the data that we read
     Table table(name, "", colNames, colTypes, rows);
@@ -134,14 +118,15 @@ Table Table::ReadTable(std::istream& stream, const char separator)
 Table Table::ReadTableFromFile(String filename)
 {
     //Open file
-    std::ifstream file(filename.GetCharArray());
+    std::ifstream file((TABLEFILE_PREFIX + filename).GetCharArray());
     if (!file.is_open())
     {
         std::cerr << "Error: Cannot open file: " << filename << std::endl;
+        return Table();
     }
 
     //Read table from file
-    Table table = Table::ReadTable(file, FILE_SEPARATOR);
+    Table table = Table::ReadTable(file, TABLEFILE_SEPARATOR);
 
     //Set table's filename
     table.filename = filename;
@@ -182,14 +167,14 @@ void Table::Write(std::ostream& stream, const char separator) const
 void Table::WriteToFile(String filename) const
 {
     //Open file
-    std::ofstream file(filename.GetCharArray());
+    std::ofstream file((TABLEFILE_PREFIX + filename).GetCharArray());
     if (!file.is_open())
     {
         std::cerr << "Error: Cannot open file: " << filename << std::endl;
     }
 
     //Write table to file
-    this->Write(file, FILE_SEPARATOR);
+    this->Write(file, TABLEFILE_SEPARATOR);
 
     //Close file
     file.close();

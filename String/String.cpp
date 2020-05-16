@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstring>
 
-const double EPSILON = 0.001;
+static const double EPSILON = 0.001;
 
 //Checks if a character is a digit 0-9
 bool IsDigit(char c)

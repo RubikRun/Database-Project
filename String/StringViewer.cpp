@@ -2,28 +2,28 @@
 #include "String.hpp"
 #include "../Debugger/Debugger.hpp"
 
-const String STRINGVIEWMODE = "STRING VIEW MODE";
+static const String STRINGVIEWMODE = "STRING VIEW MODE";
 
-const String PAGE = "Page ";
+static const String PAGE = "Page ";
 
-const String COMMAND_WINDOW = "Command: ";
+static const String COMMAND_WINDOW = "Command: ";
 
-const String HELP_MESSAGE = "This is the string view mode. It's used to easily view big strings.\n"
+static const String HELP_MESSAGE = "This is the string view mode. It's used to easily view big strings.\n"
 "It splits the string to pages of a given size.\n"
 "You can navigate between pages using the commands:\n\"nextpage\", that goes to the next page,\n"
 "\"prevpage\", that goes to the previous page,\n\"goto <page number>\" that goes to a specific page\n"
 "and you can exit the string view mode with the \"exit\" command. ";
 
-const String NOTVALIDCOMMAND_MESSAGE = "Not a valid command. Type \"help\" if you don't know what to do, "
+static const String NOTVALIDCOMMAND_MESSAGE = "Not a valid command. Type \"help\" if you don't know what to do, "
 "or \"exit\" to exit the string view mode.";
 
-const String NEXTPAGE_COMMAND = "nextpage";
-const String PREVPAGE_COMMAND = "prevpage";
-const String GOTO_COMMAND = "goto";
-const String HELP_COMMAND = "help";
-const String EXIT_COMMAND = "exit";
+static const String NEXTPAGE_COMMAND = "nextpage";
+static const String PREVPAGE_COMMAND = "prevpage";
+static const String GOTO_COMMAND = "goto";
+static const String HELP_COMMAND = "help";
+static const String EXIT_COMMAND = "exit";
 
-const String TESTSTRING = "alabala\nhmm\ni ko sq\nnqkvi redove tuka\noshte edin\nyea\nnz ko sq\n"
+static const String TESTSTRING = "alabala\nhmm\ni ko sq\nnqkvi redove tuka\noshte edin\nyea\nnz ko sq\n"
 "mii aide oshte\nda ima tam\nda testvam\noshte redove\ndadada\npickle riiiick\nfrench\n"
 "hiphop\naide de\nkolko oshte\nmii oshte tolkova\nmaleee\nmn ue\nne e nujno da sa tolko dulgi ama da vidim\n"
 "oshteee\nalabala\noctopus\nmi e lubimiq\nalbum\nno lubimata mi\npesen\nne e ot nego\n"

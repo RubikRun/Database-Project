@@ -6,17 +6,8 @@
 
 typedef Vector<String> Row;
 
-const unsigned UNSIGNED_MAX = 0xffffffff;
-const unsigned INVALID_COLUMN = UNSIGNED_MAX;
-const unsigned CELL_WIDTH = 20;
-const char CELL_FILL_CHAR = ' ';
-const char CELL_OFFSET_MIN = 2;
-const char FILE_SEPARATOR = ',';
-const String NOVALUE_EXTERNAL = "NULL";
 const String NOVALUE_INTERNAL = "";
-const unsigned VIEWMODE_LINESPERPAGE = 15;
-const String INNERJOIN_PREFIX = "innerjoin_";
-const String TABLENAME_SEPARATOR = "_";
+const unsigned INVALID_COLUMN = 0xffffffff;
 
 class Table
 {
@@ -35,6 +26,9 @@ class Table
 
     public:
 
+        //Creates an empty table
+        Table();
+
         //Creates an empty table with a given name
         Table(const String& name);
 
@@ -47,9 +41,6 @@ class Table
 
         //Sets the name of the table
         void SetName(const String& name);
-
-        //Prints all info about the table (testing only)
-        void PrintAll();
 
         //Reads a table from a file and returns it
         static Table ReadTableFromFile(String filename);
