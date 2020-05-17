@@ -42,6 +42,9 @@ class Table
         //Sets the name of the table
         void SetName(const String& name);
 
+        //Prints all columns' names and types
+        void PrintColsInfo();
+
         //Reads a table from a file and returns it
         static Table ReadTableFromFile(String filename);
 
@@ -83,6 +86,12 @@ class Table
         //Returns the result
         double Aggregate(unsigned targetColumn, AggregateOperation operation,
             unsigned searchColumn = INVALID_COLUMN, const String& searchValue = NOVALUE_INTERNAL) const;
+
+        //Converts a string to a value type
+        static ValueType GetValueTypeFromString(const String& string);
+
+        //Converts a string to an aggregate operation
+        static AggregateOperation GetAggregateOperationFromString(const String& string);
 
     private:
 

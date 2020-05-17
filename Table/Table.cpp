@@ -14,6 +14,8 @@ static const unsigned VIEWMODE_LINESPERPAGE = 15;
 static const String INNERJOIN_PREFIX = "innerjoin_";
 static const String TABLENAME_SEPARATOR = "_";
 
+static const String COLTYPE_STRINGS[3] = {"Whole", "Decimal", "Text"};
+
 Table::Table()
 {
     this->rowsCount = this->colsCount = 0;
@@ -47,6 +49,17 @@ const String& Table::GetName()
 void Table::SetName(const String& name)
 {
     this->name = name;
+}
+
+void Table::PrintColsInfo()
+{
+    std::cout << this->name << " columns:" << std::endl;
+    for (int i = 0; i < this->colsCount; i++)
+    {
+        std::cout << i + 1 << ". Column \"" << this->colNames[i] << "\" of type "
+        << COLTYPE_STRINGS[this->colTypes[i]] << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 //Reads columns' names and types from a stream
@@ -287,7 +300,9 @@ Vector<unsigned> Table::SelectIndecies(unsigned searchCol, const String& searchV
     for (int i = 0; i < this->rowsCount; i++)
     {
         if (searchCol == INVALID_COLUMN ||
-        (this->rows[i][searchCol] == searchValue) != complement )
+        (this->rows[i][searchCol] == searchValue || 
+        (this->rows[i][searchCol] == NOVALUE_INTERNAL && searchValue == NOVALUE_EXTERNAL)) 
+        != complement )
         {
             foundRows.Add(i);
         }
@@ -485,6 +500,7 @@ double Table::Aggregate(unsigned targetCol, AggregateOperation operation,
     {
         unsigned rowIndex = foundRows[i];
         double numValue = this->rows[rowIndex][targetCol].ParseToDouble();
+        Debug("NUMVALUE: " << numValue)
         //Update the result depending on the operation type
         switch (operation)
         {
@@ -496,4 +512,20 @@ double Table::Aggregate(unsigned targetCol, AggregateOperation operation,
     }
 
     return result;
+}
+
+ValueType Table::GetValueTypeFromString(const String& string)
+{
+    if (string == "Whole") return Whole;
+    else if (string == "Decimal") return Decimal;
+    else return Text;
+}
+
+AggregateOperation Table::GetAggregateOperationFromString(const String& string)
+{
+    //enum AggregateOperation { Sum, Product, Maximum, Minimum };
+    if (string == "Sum") return Sum;
+    else if (string == "Product") return Product;
+    else if (string == "Maximum") return Maximum;
+    else return Minimum;
 }
