@@ -21,30 +21,45 @@ static const String OPERATION_RENAME = "rename";
 static const String OPERATION_COUNT = "count";
 static const String OPERATION_AGGREGATE = "aggregate";
 
+static const String INVALIDCOMMAND_MESSAGE =
+"Not a valid command.\n"
+"Type \"help\" if you are not sure what to do.\n";
+
 Database::Database()
 {
     this->tablesCount = 0;
 }
 
-Database Database::ReadDatabaseFromFile(const String& filename)
+const String& Database::GetName()
 {
-    //Create an empty database
-    Database database;
-    database.filename = filename;
+    return this->name;
+}
 
+const String& Database::GetFilename()
+{
+    return this->filename;
+}
+
+Database* Database::ReadDatabaseFromFile(const String& filename)
+{
     //Open file
     std::ifstream file((DATABASEFILE_PREFIX + filename).GetCharArray());
     if (!file.is_open())
     {
         std::cerr << "Error: Cannot open file: " << filename << std::endl;
+        return nullptr;
     }
 
+    //Create an empty database
+    Database* database = new Database();
+    database->filename = filename;
+
     //Read database's name
-    database.name.ReadNext(file, DATABASEFILE_SEPARATOR);
+    database->name.ReadNext(file, DATABASEFILE_SEPARATOR);
     //Read the number of tables
-    database.tablesCount = String::ReadInt(file, DATABASEFILE_SEPARATOR);
+    database->tablesCount = String::ReadInt(file, DATABASEFILE_SEPARATOR);
     //Read tables
-    for (int i = 0; i < database.tablesCount; i++)
+    for (int i = 0; i < database->tablesCount; i++)
     {
         //Read table's name
         String tableName;
@@ -56,17 +71,52 @@ Database Database::ReadDatabaseFromFile(const String& filename)
         //Read the table from the file
         Table table = Table::ReadTableFromFile(tableFilename);
         //Add table to database
-        database.tables.Add(table);
+        database->tables.Add(table);
+    }
+
+    //Close file
+    file.close();
+    if (file.is_open())
+    {
+        std::cerr << "Error: Cannot clos file: " << filename << std::endl;
     }
 
     return database;
 }
 
-void Database::ExecuteCommand(const String& command)
+void Database::WriteDatabaseToFile(const String& filename)
 {
-    //Split the command
-    Vector<String> args = command.Split();
+    //Open file
+    std::ofstream file((DATABASEFILE_PREFIX + filename).GetCharArray());
+    if (!file.is_open())
+    {
+        std::cerr << "Error: Cannot open file: " << filename << std::endl;
+        return;
+    }
 
+    //Write database's name
+    file << this->name << DATABASEFILE_SEPARATOR;
+    //Write the number of tables
+    file << this->tablesCount << std::endl;
+    //Write tables
+    for (int i = 0; i < this->tablesCount; i++)
+    {
+        Table* table = &this->tables[i];
+        //Write table's name and filename
+        file << table->GetName() << DATABASEFILE_SEPARATOR
+        << table->GetFilename() << std::endl;
+    }
+
+    //Close file
+    file.close();
+    if (file.is_open())
+    {
+        std::cerr << "Error: Cannot clos file: " << filename << std::endl;
+    }
+}
+
+void Database::ExecuteCommand(const Vector<String>& args)
+{
     if (args[0] == OPERATION_IMPORT)
     {
         this->ImportCommand(args);
@@ -125,7 +175,7 @@ void Database::ExecuteCommand(const String& command)
     }
     else
     {
-
+        std::cout << INVALIDCOMMAND_MESSAGE << std::endl;
     }
 }
 

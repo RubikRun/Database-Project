@@ -42,6 +42,9 @@ class Table
         //Sets the name of the table
         void SetName(const String& name);
 
+        //Returns the name of the file where the table is stored
+        const String& GetFilename();
+
         //Prints all columns' names and types
         void PrintColsInfo();
 

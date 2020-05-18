@@ -51,6 +51,11 @@ void Table::SetName(const String& name)
     this->name = name;
 }
 
+const String& Table::GetFilename()
+{
+    return this->filename;
+}
+
 void Table::PrintColsInfo()
 {
     std::cout << this->name << " columns:" << std::endl;
@@ -159,12 +164,12 @@ void Table::Write(std::ostream& stream, const char separator) const
     //Write table's name
     stream << this->name << separator;
     //Write the number of rows and columns
-    stream << this->rowsCount << separator << this->colsCount << separator;
+    stream << this->rowsCount << separator << this->colsCount << std::endl;
 
     //Write names and types of columns
     for (int i = 0; i < this->colsCount; i++)
     {
-        stream << this->colNames[i] << separator << this->colTypes[i] << separator;
+        stream << this->colNames[i] << separator << this->colTypes[i] << std::endl;
     }
 
     //Write rows
@@ -172,8 +177,13 @@ void Table::Write(std::ostream& stream, const char separator) const
     {
         for (int j = 0; j < this->colsCount; j++)
         {
-            stream << this->rows[i][j] << separator;
+            stream << this->rows[i][j];
+            if (j < this->colsCount - 1)
+            {
+                stream << separator;
+            }
         }
+        stream << std::endl;
     }
 }
 

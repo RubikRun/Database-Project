@@ -20,11 +20,20 @@ class Database
 
     public:
 
+        //Returns the name of the database
+        const String& GetName();
+
+        //Returns the filename of the database
+        const String& GetFilename();
+
         //Reads a database from a file
-        static Database ReadDatabaseFromFile(const String& filename);
+        static Database* ReadDatabaseFromFile(const String& filename);
+
+        //Writes the database to a file
+        void WriteDatabaseToFile(const String& filename);
 
         //Executes the command on the database
-        void ExecuteCommand(const String& command);
+        void ExecuteCommand(const Vector<String>& args);
 
     private:
 
@@ -69,6 +78,9 @@ class Database
 
         //Executes an aggregate command
         void AggregateCommand(const Vector<String>& args);
+
+        //Executes a help command
+        void HelpCommand();
 
         //Finds the table with the given name
         Table* FindTable(const String& tableName, bool errorMessage = true);
